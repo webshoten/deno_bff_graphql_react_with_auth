@@ -1,12 +1,7 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+# Deno Deploy へのデプロイ用ワークフロー
+# https://github.com/denoland/deployctl
 
-# This workflow will install Deno then run `deno lint` and `deno test`.
-# For more information see: https://github.com/denoland/setup-deno
-
-name: Deno
+name: Deploy to Deno Deploy
 
 on:
   push:
@@ -16,9 +11,10 @@ on:
 
 permissions:
   contents: read
+  id-token: write # Deno Deploy に必要
 
 jobs:
-  test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,21 +22,40 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
 
-      # Uncomment this step to verify the use of 'deno fmt' on each commit.
+      # フォーマットチェック（オプション）
       # - name: Verify formatting
       #   run: deno fmt --check
 
+      # Linter（オプション）
       # - name: Run linter
       #   run: deno lint --ignore=public/generated/
 
+      # テスト（オプション）
       # - name: Run tests
       #   run: deno test -A
 
-      - name: Build
+      # フロントエンドのビルド
+      - name: Build frontend
         env:
           DENO_ENV: production
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+
         run: deno task build
+
+      # Deno Deploy へデプロイ
+      - name: Deploy to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "your-project-name" # ← Deno Deploy のプロジェクト名に変更
+          entrypoint: "src/server.ts"
+          # include: |
+          #   src/
+          #   dist/
+          #   public/
+          #   import_map.json
+          #   deno.json

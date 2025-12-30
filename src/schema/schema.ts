@@ -8,6 +8,7 @@ import { createAuthService } from "../auth/service.ts";
 // GraphQL コンテキスト型
 export type GraphQLContext = {
   currentUser: AuthUser | null;
+  baseUrl: string; // リクエストから取得したベースURL
 };
 
 const builder = new SchemaBuilder<{ Context: GraphQLContext }>({});
@@ -217,7 +218,7 @@ builder.mutationType({
         email: t.arg.string({ required: true }),
         password: t.arg.string({ required: true }),
       },
-      resolve: async (_, args) => {
+      resolve: async (_, args, context) => {
         const kv = await getKv();
         const authUserRepo = getAuthUserRepository(kv);
         const authService = createAuthService({ authUserRepo });
@@ -226,6 +227,7 @@ builder.mutationType({
           name: args.name,
           email: args.email,
           password: args.password,
+          baseUrl: context.baseUrl,
         });
       },
     }),

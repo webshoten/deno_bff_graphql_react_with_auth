@@ -23,6 +23,7 @@ export type SignupInput = {
   name: string;
   email: string;
   password: string;
+  baseUrl: string; // 認証メールのリンクに使用
 };
 
 // サインアップの結果型
@@ -142,10 +143,8 @@ export function createAuthService(deps: AuthServiceDeps) {
       // 認証トークンを生成
       const token = await createEmailToken(user.id);
 
-      // 認証リンクを作成
-      // TODO: 本番環境では環境変数から取得
-      const baseUrl = Deno.env.get("APP_BASE_URL") || "http://localhost:4000";
-      const verificationUrl = `${baseUrl}/verify-email?token=${token}`;
+      // 認証リンクを作成（リクエストから取得したbaseUrlを使用）
+      const verificationUrl = `${input.baseUrl}/verify-email?token=${token}`;
 
       // 認証メールを送信
       const emailResult = await sendVerificationEmail(

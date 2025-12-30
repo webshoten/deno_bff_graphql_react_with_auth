@@ -79,11 +79,16 @@ app.all("/graphql", async (c) => {
   const cookieHeader = c.req.header("cookie");
   const currentUser = await getUserFromCookie(cookieHeader ?? null);
 
+  // リクエストからベースURLを取得
+  const url = new URL(c.req.url);
+  const baseUrl = Deno.env.get("APP_BASE_URL") ||
+    `${url.protocol}//${url.host}`;
+
   // GraphQL Yoga を実行（コンテキストにユーザー情報を渡す）
   const yoga = createYoga<GraphQLContext>({
     schema,
     graphqlEndpoint: "/graphql",
-    context: () => ({ currentUser }),
+    context: () => ({ currentUser, baseUrl }),
   });
 
   const response = await yoga.fetch(c.req.raw);
