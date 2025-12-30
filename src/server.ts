@@ -147,8 +147,12 @@ app.use("/*", async (c, next) => {
   const html = await Deno.readTextFile("./public/index.html");
   const timestamp = Date.now();
 
+  // 本番環境かどうかを判定（Deno Deploy では DENO_DEPLOYMENT_ID が設定される）
+  const isProduction = Deno.env.get("DENO_ENV") === "production" ||
+    Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
+
   // 開発環境ではライブリロードスクリプトを注入
-  if (Deno.env.get("DENO_ENV") !== "production") {
+  if (!isProduction) {
     const liveReloadScript = `
     <script>
       (function() {

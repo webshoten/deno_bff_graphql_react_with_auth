@@ -51,11 +51,11 @@ jobs:
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "deno-bff-gr-65" # ← Deno Deploy のプロジェクト名に変更
+          project: "deno-bff-gr-65"
           entrypoint: "src/server.ts"
-          # include: |
-          #   src/
-          #   dist/
-          #   public/
-          #   import_map.json
-          #   deno.json
+          include: |
+            src
+            dist
+            public
+            import_map.json
+            deno.json
