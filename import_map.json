@@ -1,0 +1,24 @@
+{
+  "imports": {
+    "@pothos/core": "npm:@pothos/core",
+    "graphql-yoga": "npm:graphql-yoga",
+    "@graphql-tools/schema": "npm:@graphql-tools/schema",
+    "graphql": "npm:graphql",
+    "@genql/cli": "npm:@genql/cli",
+    "urql": "npm:urql",
+    "hono": "npm:hono",
+    "hono/deno": "npm:hono/deno",
+    "react": "npm:react@18",
+    "react-dom": "npm:react-dom@18",
+    "react-dom/client": "npm:react-dom@18/client",
+    "react/jsx-runtime": "npm:react@18/jsx-runtime",
+    "@types/react": "npm:@types/react@18",
+    "@deno/emit": "jsr:@deno/emit@^0.46.0",
+    "wonka": "npm:wonka",
+    "hono/cookie": "npm:hono/cookie",
+    "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
+    "denomailer": "https://deno.land/x/denomailer@1.6.0/mod.ts",
+    "djwt": "https://deno.land/x/djwt@v3.0.2/mod.ts",
+    "react-router-dom": "npm:react-router-dom@6"
+  }
+}

@@ -1,0 +1,40 @@
+type AuthResult {
+  message: String
+  success: Boolean
+  user: AuthUser
+}
+
+type AuthUser {
+  createdAt: String
+  email: String
+  emailVerified: Boolean
+  id: ID
+  name: String
+}
+
+type Mutation {
+  createUser(name: String!): User
+  deleteUser(id: ID!): User
+  login(email: String!, password: String!): AuthResult
+  signup(email: String!, name: String!, password: String!): AuthResult
+}
+
+type Post {
+  content: String
+  id: ID
+  title: String
+}
+
+type Query {
+  me: AuthUser
+  post(id: ID!): Post
+  postCount: Int
+  posts: [Post!]
+  user(id: ID!): User
+  users: [User!]
+}
+
+type User {
+  id: ID
+  name: String
+}
