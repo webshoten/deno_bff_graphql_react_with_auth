@@ -53,6 +53,15 @@ export default {
                     ]
                 }
             ],
+            "deleteAuthUser": [
+                3,
+                {
+                    "id": [
+                        4,
+                        "ID!"
+                    ]
+                }
+            ],
             "deleteUser": [
                 9,
                 {
@@ -92,6 +101,15 @@ export default {
                     ]
                 }
             ],
+            "verifyEmail": [
+                10,
+                {
+                    "token": [
+                        1,
+                        "String!"
+                    ]
+                }
+            ],
             "__typename": [
                 1
             ]
@@ -111,6 +129,9 @@ export default {
             ]
         },
         "Query": {
+            "authUsers": [
+                3
+            ],
             "me": [
                 3
             ],
@@ -152,6 +173,17 @@ export default {
             ],
             "name": [
                 1
+            ],
+            "__typename": [
+                1
+            ]
+        },
+        "VerifyEmailResult": {
+            "message": [
+                1
+            ],
+            "success": [
+                2
             ],
             "__typename": [
                 1

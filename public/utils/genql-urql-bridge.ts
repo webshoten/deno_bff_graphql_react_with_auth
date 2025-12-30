@@ -53,6 +53,7 @@ export function useTypedQuery<Query extends QueryGenqlSelection>(opts: {
   });
 }
 
+// deno-lint-ignore no-explicit-any
 const typeMap = linkTypeMap(types as any);
 
 /**
@@ -71,7 +72,7 @@ export function useTypedMutation<Mutation extends MutationGenqlSelection>(
   const operation = generateGraphqlOperation(
     "mutation",
     typeMap.Mutation!,
-    opts.mutation as any,
+    opts.mutation as unknown as Fields,
   );
 
   // useMutationにはクエリ文字列を直接渡す

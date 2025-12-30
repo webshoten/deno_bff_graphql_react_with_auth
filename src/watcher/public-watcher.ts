@@ -13,6 +13,12 @@ import { buildReactApp } from "../build.ts";
 const WATCH_PATHS = ["./public"];
 const DEBOUNCE_MS = 100;
 
+// 監視から除外するパス（genql 生成中の競合を防ぐ）
+const IGNORE_PATTERNS = [
+  "/generated/",
+  "/generated\\", // Windows対応
+];
+
 let isBuilding = false;
 let buildQueue = false;
 
@@ -29,7 +35,7 @@ export function setLiveReloadNotifier(fn: () => void): void {
 /**
  * ビルドを実行（キュー管理付き）
  */
-async function runBuild(): Promise<void> {
+export async function runBuild(): Promise<void> {
   if (isBuilding) {
     buildQueue = true;
     return;
@@ -75,6 +81,15 @@ export async function startPublicWatcher(): Promise<void> {
 
     for await (const event of watcher) {
       if (event.kind === "modify" || event.kind === "create") {
+        // 除外パターンに一致するファイルは無視
+        const shouldIgnore = event.paths.every((path) =>
+          IGNORE_PATTERNS.some((pattern) => path.includes(pattern))
+        );
+
+        if (shouldIgnore) {
+          continue;
+        }
+
         console.log(`🔄 ファイル変更を検知: ${event.paths.join(", ")}`);
 
         // デバウンス（ファイル書き込み完了を待つ）

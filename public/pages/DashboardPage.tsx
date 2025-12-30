@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "../components/Header.tsx";
 import { UserRegistrationForm } from "../components/UserRegistrationForm.tsx";
 import { UserList } from "../components/UserList.tsx";
+import { AuthUserList } from "../components/AuthUserList.tsx";
 import { useAuth } from "../context/AuthContext.tsx";
 
 export function DashboardPage() {
@@ -31,6 +32,7 @@ export function DashboardPage() {
             </button>
           </div>
         </div>
+        <AuthUserList />
         <UserRegistrationForm />
         <UserList />
       </div>

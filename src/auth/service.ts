@@ -1,7 +1,9 @@
 // 認証サービス（ビジネスロジック）
 
 import { hashPassword, verifyPassword } from "./password.ts";
+import { createEmailToken } from "./email-verify.ts";
 import type { AuthUser, CreateAuthUserInput } from "../kv/auth-users.ts";
+import { sendVerificationEmail } from "../mailer/gmail.ts";
 
 // リポジトリのインターフェース（DI用）
 export type AuthUserRepository = {
@@ -41,6 +43,12 @@ export type LoginResult = {
   success: boolean;
   message: string;
   user: AuthUser | null;
+};
+
+// メール認証の結果型
+export type VerifyEmailResult = {
+  success: boolean;
+  message: string;
 };
 
 // バリデーションエラー
@@ -124,16 +132,36 @@ export function createAuthService(deps: AuthServiceDeps) {
       // パスワードハッシュ化
       const passwordHash = await hashPassword(input.password);
 
-      // ユーザー作成
+      // ユーザー作成 (emailVerified: false で作成される)
       const user = await authUserRepo.create({
         name: input.name.trim(),
         email: input.email.toLowerCase().trim(),
         passwordHash,
       });
 
+      // 認証トークンを生成
+      const token = await createEmailToken(user.id);
+
+      // 認証リンクを作成
+      // TODO: 本番環境では環境変数から取得
+      const baseUrl = Deno.env.get("APP_BASE_URL") || "http://localhost:4000";
+      const verificationUrl = `${baseUrl}/verify-email?token=${token}`;
+
+      // 認証メールを送信
+      const emailResult = await sendVerificationEmail(
+        { email: user.email, name: user.name },
+        verificationUrl,
+      );
+
+      if (!emailResult.success) {
+        console.error("❌ 認証メール送信失敗:", emailResult.error);
+        // メール送信失敗してもユーザー作成は成功とする
+        // （後で再送機能を追加予定）
+      }
+
       return {
         success: true,
-        message: "登録が完了しました",
+        message: "登録が完了しました。メールをご確認ください。",
         user,
       };
     },
@@ -178,6 +206,54 @@ export function createAuthService(deps: AuthServiceDeps) {
         success: true,
         message: "ログインしました",
         user,
+      };
+    },
+
+    /**
+     * メール認証（トークンを検証してemailVerifiedをtrueに）
+     */
+    async verifyEmail(token: string): Promise<VerifyEmailResult> {
+      // トークンを検証してuserIdを取得
+      const { verifyEmailToken, deleteEmailToken } = await import(
+        "./email-verify.ts"
+      );
+
+      const userId = await verifyEmailToken(token);
+      if (!userId) {
+        return {
+          success: false,
+          message: "Invalid or expired verification token",
+        };
+      }
+
+      // ユーザーを取得
+      const user = await authUserRepo.getById(userId);
+      if (!user) {
+        return {
+          success: false,
+          message: "User not found",
+        };
+      }
+
+      // 既に認証済みの場合
+      if (user.emailVerified) {
+        // トークンを削除
+        await deleteEmailToken(token);
+        return {
+          success: true,
+          message: "Email already verified",
+        };
+      }
+
+      // emailVerifiedをtrueに更新
+      await authUserRepo.updateEmailVerified(userId, true);
+
+      // トークンを削除
+      await deleteEmailToken(token);
+
+      return {
+        success: true,
+        message: "Email verified successfully",
       };
     },
   };

@@ -96,23 +96,14 @@ export async function handleAuthResponse(responseBody: string): Promise<{
     return { authCookie: null, debugLog: null };
   }
 
-  // login 成功時
+  // login 成功時のみ Cookie をセット
+  // （signup 時はメール認証が必要なので Cookie をセットしない）
   if (parsedBody?.data?.login?.success && parsedBody.data.login.user) {
     const user = parsedBody.data.login.user;
     const cookie = await createAuthCookie(user);
     return {
       authCookie: cookie,
       debugLog: `🔐 Login成功、Cookieをセット: ${JSON.stringify(user)}`,
-    };
-  }
-
-  // signup 成功時
-  if (parsedBody?.data?.signup?.success && parsedBody.data.signup.user) {
-    const user = parsedBody.data.signup.user;
-    const cookie = await createAuthCookie(user);
-    return {
-      authCookie: cookie,
-      debugLog: `🔐 Signup成功、Cookieをセット: ${JSON.stringify(user)}`,
     };
   }
 

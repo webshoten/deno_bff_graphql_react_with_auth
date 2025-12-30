@@ -108,7 +108,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
   });
 
-  // サインアップ
+  // サインアップ（メール認証が必要なのでログイン状態にはしない）
   const signup = useCallback(
     async (
       name: string,
@@ -128,14 +128,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return { success: false, message: "レスポンスが不正です" };
         }
 
-        if (data.success && data.user) {
-          setUser({
-            id: data?.user?.id ?? "",
-            name: data?.user?.name ?? "",
-            email: data?.user?.email ?? "",
-            emailVerified: data?.user?.emailVerified ?? false,
-          });
-        }
+        // メール認証が必要なので、ここではログイン状態にしない
+        // ユーザーはメール内のリンクをクリックして認証後にログインする
 
         return { success: data.success ?? false, message: data.message ?? "" };
       } catch (error) {

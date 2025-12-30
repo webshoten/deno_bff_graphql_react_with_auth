@@ -74,6 +74,20 @@ AuthResultRef.implement({
   }),
 });
 
+// VerifyEmailResult の参照
+const VerifyEmailResultRef = builder.objectRef<{
+  success: boolean;
+  message: string;
+}>("VerifyEmailResult");
+
+// VerifyEmailResult 型
+VerifyEmailResultRef.implement({
+  fields: (t) => ({
+    success: t.exposeBoolean("success"),
+    message: t.exposeString("message"),
+  }),
+});
+
 // Query 型
 builder.queryType({
   fields: (t) => ({
@@ -131,6 +145,15 @@ builder.queryType({
         const kv = await getKv();
         const postRepo = getPostRepository(kv);
         return await postRepo.count();
+      },
+    }),
+    // 認証ユーザー一覧
+    authUsers: t.field({
+      type: [AuthUserRef],
+      resolve: async () => {
+        const kv = await getKv();
+        const authUserRepo = getAuthUserRepository(kv);
+        return await authUserRepo.getAll();
       },
     }),
   }),
@@ -206,7 +229,6 @@ builder.mutationType({
         });
       },
     }),
-
     // ログイン
     login: t.field({
       type: AuthResultRef,
@@ -223,6 +245,39 @@ builder.mutationType({
           email: args.email,
           password: args.password,
         });
+      },
+    }),
+    // 認証ユーザー削除
+    deleteAuthUser: t.field({
+      type: AuthUserRef,
+      args: {
+        id: t.arg.id({ required: true }),
+      },
+      resolve: async (_, args) => {
+        const kv = await getKv();
+        const authUserRepo = getAuthUserRepository(kv);
+
+        const user = await authUserRepo.getById(String(args.id));
+        if (!user) {
+          throw new Error(`AuthUser with id ${args.id} not found`);
+        }
+
+        await authUserRepo.delete(String(args.id));
+        return user;
+      },
+    }),
+    // メール認証
+    verifyEmail: t.field({
+      type: VerifyEmailResultRef,
+      args: {
+        token: t.arg.string({ required: true }),
+      },
+      resolve: async (_, args) => {
+        const kv = await getKv();
+        const authUserRepo = getAuthUserRepository(kv);
+        const authService = createAuthService({ authUserRepo });
+
+        return await authService.verifyEmail(args.token);
       },
     }),
   }),

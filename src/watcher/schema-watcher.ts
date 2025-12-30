@@ -9,6 +9,7 @@
  */
 
 import { generateGenQL } from "../generate/generate-genql.ts";
+import { runBuild } from "./public-watcher.ts";
 
 const SCHEMA_PATH = "./src/schema";
 const DEBOUNCE_MS = 100;
@@ -49,6 +50,10 @@ async function generateTypes(): Promise<void> {
   await generateGenQL();
 
   console.log("✅ 型定義の自動生成が完了しました");
+
+  // 型定義生成完了後にバンドルを実行
+  console.log("🔄 バンドルを再生成中...");
+  await runBuild();
 }
 
 /**
