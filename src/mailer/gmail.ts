@@ -1,13 +1,10 @@
 /**
- * Gmail SMTP メール送信モジュール
+ * メール送信モジュール（Resend HTTP API）
  *
  * 環境変数:
- * - GMAIL_USER: Gmail アドレス
- * - GMAIL_APP_PASSWORD: アプリパスワード（2段階認証で生成）
- * - GMAIL_FROM_NAME: 送信者名（オプション）
+ * - RESEND_API_KEY: Resend の API キー
+ * - EMAIL_FROM: 送信元アドレス（例: onboarding@resend.dev）
  */
-
-import { SMTPClient } from "denomailer";
 
 type SendEmailOptions = {
   to: {
@@ -25,53 +22,54 @@ type SendEmailResult = {
 };
 
 /**
- * Gmail SMTP でメールを送信
+ * Resend HTTP API でメールを送信
  */
 export async function sendEmail(
   options: SendEmailOptions,
 ): Promise<SendEmailResult> {
-  const gmailUser = Deno.env.get("GMAIL_USER");
-  const gmailAppPassword = Deno.env.get("GMAIL_APP_PASSWORD");
-  const fromName = Deno.env.get("GMAIL_FROM_NAME") || "React Auth Demo";
+  const apiKey = Deno.env.get("RESEND_API_KEY");
+  const fromEmail = Deno.env.get("EMAIL_FROM") || "onboarding@resend.dev";
 
-  if (!gmailUser) {
-    console.error("❌ GMAIL_USER が設定されていません");
-    return { success: false, error: "GMAIL_USER is not set" };
+  // デバッグログ
+  console.log("📧 メール送信開始...");
+  console.log("📧 RESEND_API_KEY:", apiKey ? "設定済み" : "未設定");
+  console.log("📧 EMAIL_FROM:", fromEmail);
+
+  if (!apiKey) {
+    console.error("❌ RESEND_API_KEY が設定されていません");
+    return { success: false, error: "RESEND_API_KEY is not set" };
   }
-
-  if (!gmailAppPassword) {
-    console.error("❌ GMAIL_APP_PASSWORD が設定されていません");
-    return { success: false, error: "GMAIL_APP_PASSWORD is not set" };
-  }
-
-  const client = new SMTPClient({
-    connection: {
-      hostname: "smtp.gmail.com",
-      port: 465,
-      tls: true,
-      auth: {
-        username: gmailUser,
-        password: gmailAppPassword,
-      },
-    },
-  });
 
   try {
-    await client.send({
-      from: `${fromName} <${gmailUser}>`,
-      to: options.to.email,
-      subject: options.subject,
-      html: options.html,
-      content: options.text || options.html.replace(/<[^>]*>/g, ""),
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: options.to.email,
+        subject: options.subject,
+        html: options.html,
+        text: options.text || options.html.replace(/<[^>]*>/g, ""),
+      }),
     });
 
-    await client.close();
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("❌ Resend API エラー:", errorData);
+      return {
+        success: false,
+        error: errorData.message || `HTTP ${response.status}`,
+      };
+    }
 
-    console.log(`✅ メール送信成功: ${options.to.email}`);
+    const data = await response.json();
+    console.log(`✅ メール送信成功: ${options.to.email}`, data);
     return { success: true };
   } catch (error) {
     console.error("❌ メール送信エラー:", error);
-    await client.close();
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

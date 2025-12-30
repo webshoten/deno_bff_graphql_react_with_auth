@@ -42,9 +42,6 @@ jobs:
       - name: Build frontend
         env:
           DENO_ENV: production
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-
         run: deno task build
 
       # Deno Deploy へデプロイ
