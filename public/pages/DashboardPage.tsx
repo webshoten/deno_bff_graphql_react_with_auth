@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
 import { useTypedQuery } from "../utils/genql-urql-bridge.ts";
+import { Button } from "../components/button/button.tsx";
 
 export function DashboardPage() {
   const { user, logout } = useAuth();
@@ -47,13 +48,13 @@ export function DashboardPage() {
         {/* ヘッダー */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">ダッシュボード</h1>
-          <button
+          <Button
             type="button"
             onClick={handleLogout}
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors"
+            className="text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors"
           >
             ログアウト
-          </button>
+          </Button>
         </div>
 
         {/* ユーザー情報カード */}
