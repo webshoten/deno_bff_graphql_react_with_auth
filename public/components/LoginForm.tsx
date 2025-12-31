@@ -1,6 +1,6 @@
 // ログインフォーム
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.tsx";
 import { sendPasswordReset } from "../firebase/auth.ts";
 

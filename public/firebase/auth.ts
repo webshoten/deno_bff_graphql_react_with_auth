@@ -107,7 +107,18 @@ export async function firebaseLogin(
       case "auth/invalid-credential":
         message = "メールアドレスまたはパスワードが間違っています";
         break;
+      case "auth/invalid-email":
+        message = "無効なメールアドレスです";
+        break;
+      case "auth/user-disabled":
+        message = "このアカウントは無効化されています";
+        break;
+      case "auth/too-many-requests":
+        message =
+          "ログイン試行回数が多すぎます。しばらく待ってから再試行してください";
+        break;
       default:
+        console.error("Unknown error code:", firebaseError.code);
         message = firebaseError.message || "エラーが発生しました";
     }
 
