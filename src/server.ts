@@ -2,7 +2,7 @@
  * サーバー
  *
  * 責務:
- * - GraphQL エンドポイント（認証コンテキスト付き）
+ * - GraphQL エンドポイント
  * - 静的ファイル配信
  * - ライブリロード WebSocket（開発環境）
  */
@@ -12,11 +12,6 @@ import { serveStatic } from "hono/deno";
 import { createYoga } from "graphql-yoga";
 import { type GraphQLContext, schema } from "./schema/schema.ts";
 import { initializeData } from "./kv/index.ts";
-import {
-  createLogoutCookie,
-  getUserFromCookie,
-  handleAuthResponse,
-} from "./auth/session.ts";
 
 const app = new Hono();
 const port = parseInt(Deno.env.get("PORT") || "4000");
@@ -75,49 +70,19 @@ if (Deno.env.get("DENO_ENV") !== "production") {
 
 // GraphQLエンドポイント
 app.all("/graphql", async (c) => {
-  // Cookie からユーザーを復元
-  const cookieHeader = c.req.header("cookie");
-  const currentUser = await getUserFromCookie(cookieHeader ?? null);
-
   // リクエストからベースURLを取得
   const url = new URL(c.req.url);
   const baseUrl = Deno.env.get("APP_BASE_URL") ||
     `${url.protocol}//${url.host}`;
 
-  // GraphQL Yoga を実行（コンテキストにユーザー情報を渡す）
+  // GraphQL Yoga を実行
   const yoga = createYoga<GraphQLContext>({
     schema,
     graphqlEndpoint: "/graphql",
-    context: () => ({ currentUser, baseUrl }),
+    context: () => ({ baseUrl }),
   });
 
-  const response = await yoga.fetch(c.req.raw);
-
-  // レスポンスボディを読み取って、login/signup 成功時に Cookie をセット
-  const responseBody = await response.text();
-  const { authCookie, debugLog } = await handleAuthResponse(responseBody);
-
-  if (debugLog) {
-    console.log(debugLog);
-  }
-
-  const newResponse = new Response(responseBody, {
-    status: response.status,
-    headers: response.headers,
-  });
-
-  if (authCookie) {
-    newResponse.headers.append("Set-Cookie", authCookie);
-  }
-
-  return newResponse;
-});
-
-// ログアウトエンドポイント
-app.post("/auth/logout", (c) => {
-  const newResponse = c.json({ success: true, message: "ログアウトしました" });
-  newResponse.headers.append("Set-Cookie", createLogoutCookie());
-  return newResponse;
+  return await yoga.fetch(c.req.raw);
 });
 
 // 静的ファイル配信 + SPA フォールバック

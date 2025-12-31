@@ -4,34 +4,14 @@
 
 export type Scalars = {
     String: string,
-    Boolean: boolean,
     ID: string,
     Int: number,
-}
-
-export interface AuthResult {
-    message: (Scalars['String'] | null)
-    success: (Scalars['Boolean'] | null)
-    user: (AuthUser | null)
-    __typename: 'AuthResult'
-}
-
-export interface AuthUser {
-    createdAt: (Scalars['String'] | null)
-    email: (Scalars['String'] | null)
-    emailVerified: (Scalars['Boolean'] | null)
-    id: (Scalars['ID'] | null)
-    name: (Scalars['String'] | null)
-    __typename: 'AuthUser'
+    Boolean: boolean,
 }
 
 export interface Mutation {
     createUser: (User | null)
-    deleteAuthUser: (AuthUser | null)
     deleteUser: (User | null)
-    login: (AuthResult | null)
-    signup: (AuthResult | null)
-    verifyEmail: (VerifyEmailResult | null)
     __typename: 'Mutation'
 }
 
@@ -43,8 +23,6 @@ export interface Post {
 }
 
 export interface Query {
-    authUsers: (AuthUser[] | null)
-    me: (AuthUser | null)
     post: (Post | null)
     postCount: (Scalars['Int'] | null)
     posts: (Post[] | null)
@@ -59,37 +37,9 @@ export interface User {
     __typename: 'User'
 }
 
-export interface VerifyEmailResult {
-    message: (Scalars['String'] | null)
-    success: (Scalars['Boolean'] | null)
-    __typename: 'VerifyEmailResult'
-}
-
-export interface AuthResultGenqlSelection{
-    message?: boolean | number
-    success?: boolean | number
-    user?: AuthUserGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-export interface AuthUserGenqlSelection{
-    createdAt?: boolean | number
-    email?: boolean | number
-    emailVerified?: boolean | number
-    id?: boolean | number
-    name?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
 export interface MutationGenqlSelection{
     createUser?: (UserGenqlSelection & { __args: {name: Scalars['String']} })
-    deleteAuthUser?: (AuthUserGenqlSelection & { __args: {id: Scalars['ID']} })
     deleteUser?: (UserGenqlSelection & { __args: {id: Scalars['ID']} })
-    login?: (AuthResultGenqlSelection & { __args: {email: Scalars['String'], password: Scalars['String']} })
-    signup?: (AuthResultGenqlSelection & { __args: {email: Scalars['String'], name: Scalars['String'], password: Scalars['String']} })
-    verifyEmail?: (VerifyEmailResultGenqlSelection & { __args: {token: Scalars['String']} })
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -103,8 +53,6 @@ export interface PostGenqlSelection{
 }
 
 export interface QueryGenqlSelection{
-    authUsers?: AuthUserGenqlSelection
-    me?: AuthUserGenqlSelection
     post?: (PostGenqlSelection & { __args: {id: Scalars['ID']} })
     postCount?: boolean | number
     posts?: PostGenqlSelection
@@ -120,29 +68,6 @@ export interface UserGenqlSelection{
     __typename?: boolean | number
     __scalar?: boolean | number
 }
-
-export interface VerifyEmailResultGenqlSelection{
-    message?: boolean | number
-    success?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-    const AuthResult_possibleTypes: string[] = ['AuthResult']
-    export const isAuthResult = (obj?: { __typename?: any } | null): obj is AuthResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isAuthResult"')
-      return AuthResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const AuthUser_possibleTypes: string[] = ['AuthUser']
-    export const isAuthUser = (obj?: { __typename?: any } | null): obj is AuthUser => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isAuthUser"')
-      return AuthUser_possibleTypes.includes(obj.__typename)
-    }
-    
 
 
     const Mutation_possibleTypes: string[] = ['Mutation']
@@ -173,13 +98,5 @@ export interface VerifyEmailResultGenqlSelection{
     export const isUser = (obj?: { __typename?: any } | null): obj is User => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isUser"')
       return User_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const VerifyEmailResult_possibleTypes: string[] = ['VerifyEmailResult']
-    export const isVerifyEmailResult = (obj?: { __typename?: any } | null): obj is VerifyEmailResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isVerifyEmailResult"')
-      return VerifyEmailResult_possibleTypes.includes(obj.__typename)
     }
     

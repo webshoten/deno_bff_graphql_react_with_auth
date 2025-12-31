@@ -2,124 +2,41 @@ export default {
     "scalars": [
         1,
         2,
-        4,
-        8
+        5,
+        7
     ],
     "types": {
-        "AuthResult": {
-            "message": [
-                1
+        "Mutation": {
+            "createUser": [
+                6,
+                {
+                    "name": [
+                        1,
+                        "String!"
+                    ]
+                }
             ],
-            "success": [
-                2
-            ],
-            "user": [
-                3
+            "deleteUser": [
+                6,
+                {
+                    "id": [
+                        2,
+                        "ID!"
+                    ]
+                }
             ],
             "__typename": [
                 1
             ]
         },
         "String": {},
-        "Boolean": {},
-        "AuthUser": {
-            "createdAt": [
-                1
-            ],
-            "email": [
-                1
-            ],
-            "emailVerified": [
-                2
-            ],
-            "id": [
-                4
-            ],
-            "name": [
-                1
-            ],
-            "__typename": [
-                1
-            ]
-        },
         "ID": {},
-        "Mutation": {
-            "createUser": [
-                9,
-                {
-                    "name": [
-                        1,
-                        "String!"
-                    ]
-                }
-            ],
-            "deleteAuthUser": [
-                3,
-                {
-                    "id": [
-                        4,
-                        "ID!"
-                    ]
-                }
-            ],
-            "deleteUser": [
-                9,
-                {
-                    "id": [
-                        4,
-                        "ID!"
-                    ]
-                }
-            ],
-            "login": [
-                0,
-                {
-                    "email": [
-                        1,
-                        "String!"
-                    ],
-                    "password": [
-                        1,
-                        "String!"
-                    ]
-                }
-            ],
-            "signup": [
-                0,
-                {
-                    "email": [
-                        1,
-                        "String!"
-                    ],
-                    "name": [
-                        1,
-                        "String!"
-                    ],
-                    "password": [
-                        1,
-                        "String!"
-                    ]
-                }
-            ],
-            "verifyEmail": [
-                10,
-                {
-                    "token": [
-                        1,
-                        "String!"
-                    ]
-                }
-            ],
-            "__typename": [
-                1
-            ]
-        },
         "Post": {
             "content": [
                 1
             ],
             "id": [
-                4
+                2
             ],
             "title": [
                 1
@@ -129,38 +46,32 @@ export default {
             ]
         },
         "Query": {
-            "authUsers": [
-                3
-            ],
-            "me": [
-                3
-            ],
             "post": [
-                6,
+                3,
                 {
                     "id": [
-                        4,
+                        2,
                         "ID!"
                     ]
                 }
             ],
             "postCount": [
-                8
+                5
             ],
             "posts": [
-                6
+                3
             ],
             "user": [
-                9,
+                6,
                 {
                     "id": [
-                        4,
+                        2,
                         "ID!"
                     ]
                 }
             ],
             "users": [
-                9
+                6
             ],
             "__typename": [
                 1
@@ -169,7 +80,7 @@ export default {
         "Int": {},
         "User": {
             "id": [
-                4
+                2
             ],
             "name": [
                 1
@@ -178,16 +89,6 @@ export default {
                 1
             ]
         },
-        "VerifyEmailResult": {
-            "message": [
-                1
-            ],
-            "success": [
-                2
-            ],
-            "__typename": [
-                1
-            ]
-        }
+        "Boolean": {}
     }
 }

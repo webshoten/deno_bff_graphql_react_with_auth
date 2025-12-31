@@ -1,24 +1,6 @@
-type AuthResult {
-  message: String
-  success: Boolean
-  user: AuthUser
-}
-
-type AuthUser {
-  createdAt: String
-  email: String
-  emailVerified: Boolean
-  id: ID
-  name: String
-}
-
 type Mutation {
   createUser(name: String!): User
-  deleteAuthUser(id: ID!): AuthUser
   deleteUser(id: ID!): User
-  login(email: String!, password: String!): AuthResult
-  signup(email: String!, name: String!, password: String!): AuthResult
-  verifyEmail(token: String!): VerifyEmailResult
 }
 
 type Post {
@@ -28,8 +10,6 @@ type Post {
 }
 
 type Query {
-  authUsers: [AuthUser!]
-  me: AuthUser
   post(id: ID!): Post
   postCount: Int
   posts: [Post!]
@@ -40,9 +20,4 @@ type Query {
 type User {
   id: ID
   name: String
-}
-
-type VerifyEmailResult {
-  message: String
-  success: Boolean
 }

@@ -1,10 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import {
-  DashboardPage,
-  LoginPage,
-  SignupPage,
-  VerifyEmailPage,
-} from "./pages/index.ts";
+import { DashboardPage, LoginPage, SignupPage } from "./pages/index.ts";
 import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 
 function App() {
@@ -13,7 +8,6 @@ function App() {
       {/* 公開ルート */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/verify-email" element={<VerifyEmailPage />} />
 
       {/* 認証必須ルート */}
       <Route

@@ -19,6 +19,10 @@
     "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
     "denomailer": "https://deno.land/x/denomailer@1.6.0/mod.ts",
     "djwt": "https://deno.land/x/djwt@v3.0.2/mod.ts",
-    "react-router-dom": "npm:react-router-dom@6"
+    "react-router-dom": "npm:react-router-dom@6",
+    "esbuild": "npm:esbuild@0.24.2",
+    "esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@0.11.1",
+    "firebase/app": "npm:firebase@10.14.1/app",
+    "firebase/auth": "npm:firebase@10.14.1/auth"
   }
 }

@@ -1,4 +1,4 @@
-// 認証コンテキスト
+// Firebase 認証コンテキスト
 
 import {
   createContext,
@@ -8,7 +8,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useTypedMutation, useTypedQuery } from "../utils/genql-urql-bridge.ts";
+import {
+  firebaseLogin,
+  firebaseLogout,
+  firebaseSignup,
+  onAuthChange,
+  resendVerificationEmail,
+} from "../firebase/auth.ts";
+import type { User } from "firebase/auth";
 
 // 認証ユーザー型
 type AuthUser = {
@@ -21,6 +28,7 @@ type AuthUser = {
 // 認証コンテキスト型
 type AuthContextType = {
   user: AuthUser | null;
+  firebaseUser: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   signup: (
@@ -33,10 +41,21 @@ type AuthContextType = {
     password: string,
   ) => Promise<{ success: boolean; message: string }>;
   logout: () => Promise<void>;
+  resendVerification: () => Promise<{ success: boolean; message: string }>;
 };
 
 // コンテキスト作成
 const AuthContext = createContext<AuthContextType | null>(null);
+
+// Firebase User を AuthUser に変換
+function toAuthUser(firebaseUser: User): AuthUser {
+  return {
+    id: firebaseUser.uid,
+    name: firebaseUser.displayName || "",
+    email: firebaseUser.email || "",
+    emailVerified: firebaseUser.emailVerified,
+  };
+}
 
 // AuthProvider コンポーネント
 type AuthProviderProps = {
@@ -44,71 +63,26 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // 初期ロード中
+  const [isLoading, setIsLoading] = useState(true);
 
-  // me クエリ（ページロード時に認証状態を復元）
-  const [meResult] = useTypedQuery({
-    query: {
-      me: {
-        id: true,
-        name: true,
-        email: true,
-        emailVerified: true,
-      },
-    },
-  });
-
-  // me クエリの結果でユーザー情報を設定
+  // Firebase 認証状態の監視
   useEffect(() => {
-    if (!meResult.fetching) {
-      if (meResult.data?.me) {
-        setUser({
-          id: meResult.data.me.id ?? "",
-          name: meResult.data.me.name ?? "",
-          email: meResult.data.me.email ?? "",
-          emailVerified: meResult.data.me.emailVerified ?? false,
-        });
+    const unsubscribe = onAuthChange((fbUser) => {
+      setFirebaseUser(fbUser);
+      if (fbUser) {
+        setUser(toAuthUser(fbUser));
+      } else {
+        setUser(null);
       }
       setIsLoading(false);
-    }
-  }, [meResult.fetching, meResult.data]);
+    });
 
-  // サインアップ mutation
-  const [signupResult, executeSignup] = useTypedMutation({
-    mutation: {
-      signup: {
-        __args: { name: "", email: "", password: "" },
-        success: true,
-        message: true,
-        user: {
-          id: true,
-          name: true,
-          email: true,
-          emailVerified: true,
-        },
-      },
-    },
-  });
+    return () => unsubscribe();
+  }, []);
 
-  // ログイン mutation
-  const [loginResult, executeLogin] = useTypedMutation({
-    mutation: {
-      login: {
-        __args: { email: "", password: "" },
-        success: true,
-        message: true,
-        user: {
-          id: true,
-          name: true,
-          email: true,
-          emailVerified: true,
-        },
-      },
-    },
-  });
-
-  // サインアップ（メール認証が必要なのでログイン状態にはしない）
+  // サインアップ
   const signup = useCallback(
     async (
       name: string,
@@ -117,21 +91,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
     ): Promise<{ success: boolean; message: string }> => {
       setIsLoading(true);
       try {
-        const result = await executeSignup({ name, email, password });
+        const result = await firebaseSignup(email, password);
 
-        if (result.error) {
-          return { success: false, message: result.error.message };
+        if (result.success && result.user) {
+          // displayName を設定
+          const { updateProfile } = await import("firebase/auth");
+          await updateProfile(result.user, { displayName: name });
+
+          // ユーザー情報を更新
+          setUser({
+            id: result.user.uid,
+            name: name,
+            email: result.user.email || "",
+            emailVerified: result.user.emailVerified,
+          });
         }
 
-        const data = result.data?.signup;
-        if (!data) {
-          return { success: false, message: "レスポンスが不正です" };
-        }
-
-        // メール認証が必要なので、ここではログイン状態にしない
-        // ユーザーはメール内のリンクをクリックして認証後にログインする
-
-        return { success: data.success ?? false, message: data.message ?? "" };
+        return { success: result.success, message: result.message };
       } catch (error) {
         return {
           success: false,
@@ -143,7 +119,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(false);
       }
     },
-    [executeSignup],
+    [],
   );
 
   // ログイン
@@ -154,27 +130,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     ): Promise<{ success: boolean; message: string }> => {
       setIsLoading(true);
       try {
-        const result = await executeLogin({ email, password });
-
-        if (result.error) {
-          return { success: false, message: result.error.message };
-        }
-
-        const data = result.data?.login;
-        if (!data) {
-          return { success: false, message: "レスポンスが不正です" };
-        }
-
-        if (data.success && data.user) {
-          setUser({
-            id: data?.user?.id ?? "",
-            name: data?.user?.name ?? "",
-            email: data?.user?.email ?? "",
-            emailVerified: data?.user?.emailVerified ?? false,
-          });
-        }
-
-        return { success: data.success ?? false, message: data.message ?? "" };
+        const result = await firebaseLogin(email, password);
+        return { success: result.success, message: result.message };
       } catch (error) {
         return {
           success: false,
@@ -186,26 +143,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(false);
       }
     },
-    [executeLogin],
+    [],
   );
 
   // ログアウト
   const logout = useCallback(async () => {
-    try {
-      await fetch("/auth/logout", { method: "POST" });
-    } catch {
-      // エラーは無視
-    }
+    await firebaseLogout();
     setUser(null);
+    setFirebaseUser(null);
   }, []);
+
+  // 確認メール再送信
+  const resendVerification = useCallback(async () => {
+    return await resendVerificationEmail();
+  }, []);
+
+  // メール認証済みかどうかで認証状態を判定
+  const isAuthenticated = user !== null && user.emailVerified;
 
   const value: AuthContextType = {
     user,
-    isLoading: isLoading || signupResult.fetching || loginResult.fetching,
-    isAuthenticated: user !== null,
+    firebaseUser,
+    isLoading,
+    isAuthenticated,
     signup,
     login,
     logout,
+    resendVerification,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

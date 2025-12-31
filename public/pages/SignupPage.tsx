@@ -4,24 +4,16 @@ import { SignupForm } from "../components/SignupForm.tsx";
 import { useAuth } from "../context/AuthContext.tsx";
 
 export function SignupPage() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [signupComplete, setSignupComplete] = useState(false);
 
   // 認証済みならダッシュボードへリダイレクト
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    if (isAuthenticated) {
       navigate("/", { replace: true });
     }
-  }, [isAuthenticated, isLoading, navigate]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
-      </div>
-    );
-  }
+  }, [isAuthenticated, navigate]);
 
   // サインアップ完了後のメール確認案内画面
   if (signupComplete) {

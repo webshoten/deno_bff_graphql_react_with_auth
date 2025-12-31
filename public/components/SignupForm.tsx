@@ -91,9 +91,9 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            minLength={8}
+            minLength={6}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="8文字以上"
+            placeholder="6文字以上"
           />
         </div>
 
