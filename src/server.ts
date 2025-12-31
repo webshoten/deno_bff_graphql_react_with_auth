@@ -94,7 +94,6 @@ app.all("/graphql", async (c) => {
 app.use("/*", async (c, next) => {
   const path = c.req.path;
 
-  console.log("watcherてst");
   // 拡張子があるパスは静的ファイルとして扱う
   const hasExtension = /\.\w+$/.test(path);
 

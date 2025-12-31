@@ -14,6 +14,7 @@ type Query {
   post(id: ID!): Post
   postCount: Int
   posts: [Post!]
+  test: String
   user(id: ID!): User
   users: [User!]
 }

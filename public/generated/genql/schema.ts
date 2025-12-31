@@ -27,6 +27,7 @@ export interface Query {
     post: (Post | null)
     postCount: (Scalars['Int'] | null)
     posts: (Post[] | null)
+    test: (Scalars['String'] | null)
     user: (User | null)
     users: (User[] | null)
     __typename: 'Query'
@@ -58,6 +59,7 @@ export interface QueryGenqlSelection{
     post?: (PostGenqlSelection & { __args: {id: Scalars['ID']} })
     postCount?: boolean | number
     posts?: PostGenqlSelection
+    test?: boolean | number
     user?: (UserGenqlSelection & { __args: {id: Scalars['ID']} })
     users?: UserGenqlSelection
     __typename?: boolean | number

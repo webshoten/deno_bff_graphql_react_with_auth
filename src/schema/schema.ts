@@ -109,6 +109,12 @@ builder.queryType({
         return await postRepo.count();
       },
     }),
+    test: t.field({
+      type: "String",
+      resolve: (_, __, context) => {
+        return "test";
+      },
+    }),
   }),
 });
 

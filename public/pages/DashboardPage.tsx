@@ -27,6 +27,12 @@ export function DashboardPage() {
     },
   });
 
+  const [testResult] = useTypedQuery({
+    query: {
+      test: true,
+    },
+  });
+
   const handleLogout = async () => {
     await logout();
     navigate("/login", { replace: true });
@@ -145,6 +151,10 @@ export function DashboardPage() {
                 </ul>
               )}
           </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          {testResult.data?.test}
         </div>
       </div>
     </div>

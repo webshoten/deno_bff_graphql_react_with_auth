@@ -64,6 +64,9 @@ export default {
             "posts": [
                 3
             ],
+            "test": [
+                1
+            ],
             "user": [
                 6,
                 {
