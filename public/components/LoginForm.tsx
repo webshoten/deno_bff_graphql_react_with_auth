@@ -3,6 +3,8 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.tsx";
 import { sendPasswordReset } from "../firebase/auth.ts";
+import { Button } from "./button/button.tsx";
+import { StyledInput } from "./input/input.tsx";
 
 type LoginFormProps = {
   onSuccess?: () => void;
@@ -113,8 +115,6 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">ログイン</h2>
-
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
           {error}
@@ -135,13 +135,12 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
           >
             メールアドレス
           </label>
-          <input
+          <StyledInput
             type="email"
             id="login-email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="example@example.com"
           />
         </div>
@@ -153,24 +152,18 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
           >
             パスワード
           </label>
-          <input
+          <StyledInput
             type="password"
             id="login-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="6文字以上"
           />
         </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? "ログイン中..." : "ログイン"}
-        </button>
+        </Button>
       </form>
 
       <button
