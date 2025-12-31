@@ -2,11 +2,21 @@ import SchemaBuilder from "@pothos/core";
 import { getKv } from "../kv/index.ts";
 import { getUserRepository, type User } from "../kv/users.ts";
 import { getPostRepository } from "../kv/posts.ts";
+import type { DecodedToken } from "../firebase/verify-token.ts";
 
 // GraphQL コンテキスト型
 export type GraphQLContext = {
+  currentUser: DecodedToken | null;
   baseUrl: string;
 };
+
+// 認証チェック（未認証ならエラー）
+function requireAuth(context: GraphQLContext): DecodedToken {
+  if (!context.currentUser) {
+    throw new Error("認証が必要です");
+  }
+  return context.currentUser;
+}
 
 const builder = new SchemaBuilder<{ Context: GraphQLContext }>({});
 
@@ -38,9 +48,18 @@ PostRef.implement({
 // Query 型
 builder.queryType({
   fields: (t) => ({
+    // 現在のログインユーザーを取得
+    me: t.field({
+      type: "String",
+      nullable: true,
+      resolve: (_, __, context) => {
+        return context.currentUser?.email ?? null;
+      },
+    }),
     users: t.field({
       type: [UserRef],
-      resolve: async () => {
+      resolve: async (_, __, context) => {
+        requireAuth(context);
         const kv = await getKv();
         const userRepo = getUserRepository(kv);
         return await userRepo.getAll();
@@ -52,7 +71,8 @@ builder.queryType({
       args: {
         id: t.arg.id({ required: true }),
       },
-      resolve: async (_, args) => {
+      resolve: async (_, args, context) => {
+        requireAuth(context);
         const kv = await getKv();
         const userRepo = getUserRepository(kv);
         return await userRepo.getById(String(args.id));
@@ -60,7 +80,8 @@ builder.queryType({
     }),
     posts: t.field({
       type: [PostRef],
-      resolve: async () => {
+      resolve: async (_, __, context) => {
+        requireAuth(context);
         const kv = await getKv();
         const postRepo = getPostRepository(kv);
         return await postRepo.getAll();
@@ -72,7 +93,8 @@ builder.queryType({
       args: {
         id: t.arg.id({ required: true }),
       },
-      resolve: async (_, args) => {
+      resolve: async (_, args, context) => {
+        requireAuth(context);
         const kv = await getKv();
         const postRepo = getPostRepository(kv);
         return await postRepo.getById(String(args.id));
@@ -80,7 +102,8 @@ builder.queryType({
     }),
     postCount: t.field({
       type: "Int",
-      resolve: async () => {
+      resolve: async (_, __, context) => {
+        requireAuth(context);
         const kv = await getKv();
         const postRepo = getPostRepository(kv);
         return await postRepo.count();
@@ -97,7 +120,8 @@ builder.mutationType({
       args: {
         name: t.arg.string({ required: true }),
       },
-      resolve: async (_, args) => {
+      resolve: async (_, args, context) => {
+        requireAuth(context);
         const kv = await getKv();
         const userRepo = getUserRepository(kv);
 
@@ -126,7 +150,8 @@ builder.mutationType({
       args: {
         id: t.arg.id({ required: true }),
       },
-      resolve: async (_, args) => {
+      resolve: async (_, args, context) => {
+        requireAuth(context);
         const kv = await getKv();
         const userRepo = getUserRepository(kv);
 

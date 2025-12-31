@@ -23,6 +23,7 @@
     "esbuild": "npm:esbuild@0.24.2",
     "esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@0.11.1",
     "firebase/app": "npm:firebase@10.14.1/app",
-    "firebase/auth": "npm:firebase@10.14.1/auth"
+    "firebase/auth": "npm:firebase@10.14.1/auth",
+    "jose": "npm:jose@5"
   }
 }

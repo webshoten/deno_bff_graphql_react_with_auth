@@ -12,6 +12,7 @@ import { serveStatic } from "hono/deno";
 import { createYoga } from "graphql-yoga";
 import { type GraphQLContext, schema } from "./schema/schema.ts";
 import { initializeData } from "./kv/index.ts";
+import { verifyAuthHeader } from "./firebase/verify-token.ts";
 
 const app = new Hono();
 const port = parseInt(Deno.env.get("PORT") || "4000");
@@ -70,16 +71,20 @@ if (Deno.env.get("DENO_ENV") !== "production") {
 
 // GraphQLエンドポイント
 app.all("/graphql", async (c) => {
+  // Authorization ヘッダーから Firebase ID トークンを検証
+  const authHeader = c.req.header("authorization");
+  const currentUser = await verifyAuthHeader(authHeader ?? null);
+
   // リクエストからベースURLを取得
   const url = new URL(c.req.url);
   const baseUrl = Deno.env.get("APP_BASE_URL") ||
     `${url.protocol}//${url.host}`;
 
-  // GraphQL Yoga を実行
+  // GraphQL Yoga を実行（コンテキストにユーザー情報を渡す）
   const yoga = createYoga<GraphQLContext>({
     schema,
     graphqlEndpoint: "/graphql",
-    context: () => ({ baseUrl }),
+    context: () => ({ currentUser, baseUrl }),
   });
 
   return await yoga.fetch(c.req.raw);
@@ -89,6 +94,7 @@ app.all("/graphql", async (c) => {
 app.use("/*", async (c, next) => {
   const path = c.req.path;
 
+  console.log("watcherてst");
   // 拡張子があるパスは静的ファイルとして扱う
   const hasExtension = /\.\w+$/.test(path);
 

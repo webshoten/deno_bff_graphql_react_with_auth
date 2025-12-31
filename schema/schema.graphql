@@ -10,6 +10,7 @@ type Post {
 }
 
 type Query {
+  me: String
   post(id: ID!): Post
   postCount: Int
   posts: [Post!]

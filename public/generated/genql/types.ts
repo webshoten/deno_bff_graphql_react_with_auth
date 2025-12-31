@@ -46,6 +46,9 @@ export default {
             ]
         },
         "Query": {
+            "me": [
+                1
+            ],
             "post": [
                 3,
                 {
