@@ -17,9 +17,19 @@ type Query {
   test: String
   user(id: ID!): User
   users: [User!]
+  words: [Word!]
 }
 
 type User {
   id: ID
   name: String
+}
+
+type Word {
+  difficulty: Int
+  english: [String!]
+  frequency: Int
+  id: ID
+  japanese: String
+  situation: String
 }

@@ -30,6 +30,7 @@ export interface Query {
     test: (Scalars['String'] | null)
     user: (User | null)
     users: (User[] | null)
+    words: (Word[] | null)
     __typename: 'Query'
 }
 
@@ -37,6 +38,16 @@ export interface User {
     id: (Scalars['ID'] | null)
     name: (Scalars['String'] | null)
     __typename: 'User'
+}
+
+export interface Word {
+    difficulty: (Scalars['Int'] | null)
+    english: (Scalars['String'][] | null)
+    frequency: (Scalars['Int'] | null)
+    id: (Scalars['ID'] | null)
+    japanese: (Scalars['String'] | null)
+    situation: (Scalars['String'] | null)
+    __typename: 'Word'
 }
 
 export interface MutationGenqlSelection{
@@ -62,6 +73,7 @@ export interface QueryGenqlSelection{
     test?: boolean | number
     user?: (UserGenqlSelection & { __args: {id: Scalars['ID']} })
     users?: UserGenqlSelection
+    words?: WordGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -69,6 +81,17 @@ export interface QueryGenqlSelection{
 export interface UserGenqlSelection{
     id?: boolean | number
     name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface WordGenqlSelection{
+    difficulty?: boolean | number
+    english?: boolean | number
+    frequency?: boolean | number
+    id?: boolean | number
+    japanese?: boolean | number
+    situation?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -102,5 +125,13 @@ export interface UserGenqlSelection{
     export const isUser = (obj?: { __typename?: any } | null): obj is User => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isUser"')
       return User_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const Word_possibleTypes: string[] = ['Word']
+    export const isWord = (obj?: { __typename?: any } | null): obj is Word => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isWord"')
+      return Word_possibleTypes.includes(obj.__typename)
     }
     

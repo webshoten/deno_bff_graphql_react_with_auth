@@ -3,7 +3,7 @@ export default {
         1,
         2,
         5,
-        7
+        8
     ],
     "types": {
         "Mutation": {
@@ -79,6 +79,9 @@ export default {
             "users": [
                 6
             ],
+            "words": [
+                7
+            ],
             "__typename": [
                 1
             ]
@@ -89,6 +92,29 @@ export default {
                 2
             ],
             "name": [
+                1
+            ],
+            "__typename": [
+                1
+            ]
+        },
+        "Word": {
+            "difficulty": [
+                5
+            ],
+            "english": [
+                1
+            ],
+            "frequency": [
+                5
+            ],
+            "id": [
+                2
+            ],
+            "japanese": [
+                1
+            ],
+            "situation": [
                 1
             ],
             "__typename": [

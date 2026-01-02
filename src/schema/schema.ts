@@ -3,6 +3,7 @@ import { getKv } from "../kv/index.ts";
 import { getUserRepository, type User } from "../kv/users.ts";
 import { getPostRepository } from "../kv/posts.ts";
 import type { DecodedToken } from "../firebase/verify-token.ts";
+import { getWordRepository } from "../kv/word.ts";
 
 // GraphQL コンテキスト型
 export type GraphQLContext = {
@@ -42,6 +43,30 @@ PostRef.implement({
     id: t.exposeID("id"),
     title: t.exposeString("title"),
     content: t.exposeString("content"),
+  }),
+});
+
+// Word 型参照
+const WordRef = builder.objectRef<
+  {
+    id: string;
+    japanese: string;
+    english: string[];
+    difficulty: number;
+    frequency: number;
+    situation: string;
+  }
+>("Word");
+
+// Word 型
+WordRef.implement({
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    japanese: t.exposeString("japanese"),
+    english: t.exposeStringList("english"),
+    difficulty: t.exposeInt("difficulty"),
+    frequency: t.exposeInt("frequency"),
+    situation: t.exposeString("situation"),
   }),
 });
 
@@ -113,6 +138,15 @@ builder.queryType({
       type: "String",
       resolve: (_, __, context) => {
         return "test";
+      },
+    }),
+    words: t.field({
+      type: [WordRef],
+      resolve: async (_, __, context) => {
+        requireAuth(context);
+        const kv = await getKv();
+        const wordRepo = getWordRepository(kv);
+        return await wordRepo.getAll();
       },
     }),
   }),
