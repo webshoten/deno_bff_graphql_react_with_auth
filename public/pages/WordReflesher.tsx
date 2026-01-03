@@ -5,6 +5,14 @@ export function WordReflesher() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  const speakEnglish = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    globalThis.speechSynthesis.cancel();
+    globalThis.speechSynthesis.speak(utterance);
+  };
+
   const [wordsResult] = useTypedQuery({
     query: {
       wordsByDifficulty: {
@@ -119,8 +127,32 @@ export function WordReflesher() {
               <div className="text-8xl md:text-9xl font-bold text-foreground animate-in fade-in zoom-in duration-500">
                 {currentWord?.japanese}
               </div>
-              <div className="text-2xl text-muted-foreground animate-in fade-in delay-100">
-                {currentWord?.english?.join(", ")}
+              <div className="flex items-center justify-center gap-4 animate-in fade-in delay-100">
+                <button
+                  onClick={() => speakEnglish(currentWord?.english?.[0] ?? "")}
+                  className="p-3 rounded-full hover:bg-purple-100 transition-colors duration-200 group"
+                  aria-label="音声を再生"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-purple-600 group-hover:text-purple-700 transition-colors"
+                  >
+                    <path d="M11 5 6 9H2v6h4l5 4V5z" />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  </svg>
+                </button>
+                <div className="text-2xl text-muted-foreground">
+                  {currentWord?.english?.join(", ")}
+                </div>
               </div>
             </div>
 
