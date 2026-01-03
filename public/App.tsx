@@ -1,5 +1,5 @@
 import { Outlet, Route, Routes } from "react-router-dom";
-import { DashboardPage, LoginPage, SignupPage } from "./pages/index.ts";
+import { LoginPage, SignupPage } from "./pages/index.ts";
 import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 import { Navigation } from "./components/Navigation.tsx";
 import { WordReflesher } from "./pages/WordReflesher.tsx";
@@ -23,17 +23,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* 認証必須ルート */}
         <Route
           path="/"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/word"
           element={
             <ProtectedRoute>
               <WordReflesher />
@@ -46,7 +37,7 @@ function App() {
           path="*"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <WordReflesher />
             </ProtectedRoute>
           }
         />

@@ -55,5 +55,18 @@ export function getWordRepository(kv: Deno.Kv) {
       }
       return count;
     },
+
+    // 難易度でワードを取得
+    async getByDifficulty(difficulty: number): Promise<Word[]> {
+      const words: Word[] = [];
+      for await (
+        const entry of kv.list<Word>({
+          prefix,
+        })
+      ) {
+        words.push(entry.value);
+      }
+      return words.filter((word) => word.difficulty === difficulty);
+    },
   };
 }

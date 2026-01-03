@@ -19,18 +19,11 @@ export function Navigation() {
               ? (
                 <>
                   <NavLink
-                    to="/word"
-                    className={({ isActive }) =>
-                      isActive ? "text-blue-600" : "text-gray-600"}
-                  >
-                    単語学習
-                  </NavLink>
-                  <NavLink
                     to="/"
                     className={({ isActive }) =>
                       isActive ? "text-blue-600" : "text-gray-600"}
                   >
-                    ダッシュボード
+                    単語学習
                   </NavLink>
                   <button type="button" onClick={logout}>ログアウト</button>
                 </>

@@ -149,6 +149,18 @@ builder.queryType({
         return await wordRepo.getAll();
       },
     }),
+    wordsByDifficulty: t.field({
+      type: [WordRef],
+      args: {
+        difficulty: t.arg.int({ required: true }),
+      },
+      resolve: async (_, args, context) => {
+        requireAuth(context);
+        const kv = await getKv();
+        const wordRepo = getWordRepository(kv);
+        return await wordRepo.getByDifficulty(args.difficulty);
+      },
+    }),
   }),
 });
 

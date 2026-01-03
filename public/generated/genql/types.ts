@@ -82,6 +82,15 @@ export default {
             "words": [
                 7
             ],
+            "wordsByDifficulty": [
+                7,
+                {
+                    "difficulty": [
+                        5,
+                        "Int!"
+                    ]
+                }
+            ],
             "__typename": [
                 1
             ]

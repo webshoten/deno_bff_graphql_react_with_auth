@@ -31,6 +31,7 @@ export interface Query {
     user: (User | null)
     users: (User[] | null)
     words: (Word[] | null)
+    wordsByDifficulty: (Word[] | null)
     __typename: 'Query'
 }
 
@@ -74,6 +75,7 @@ export interface QueryGenqlSelection{
     user?: (UserGenqlSelection & { __args: {id: Scalars['ID']} })
     users?: UserGenqlSelection
     words?: WordGenqlSelection
+    wordsByDifficulty?: (WordGenqlSelection & { __args: {difficulty: Scalars['Int']} })
     __typename?: boolean | number
     __scalar?: boolean | number
 }

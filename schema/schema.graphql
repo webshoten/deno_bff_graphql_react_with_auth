@@ -18,6 +18,7 @@ type Query {
   user(id: ID!): User
   users: [User!]
   words: [Word!]
+  wordsByDifficulty(difficulty: Int!): [Word!]
 }
 
 type User {
