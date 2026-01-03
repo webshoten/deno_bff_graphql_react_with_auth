@@ -124,17 +124,11 @@ export function WordReflesher() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 text-center animate-in fade-in delay-200">
+            <div className="grid grid-cols-2 gap-4 text-center animate-in fade-in delay-200">
               <div className="p-4 rounded-lg bg-muted/50">
                 <div className="text-xs text-muted-foreground mb-1">難易度</div>
                 <div className="font-medium capitalize">
                   {currentWord?.difficulty}
-                </div>
-              </div>
-              <div className="p-4 rounded-lg bg-muted/50">
-                <div className="text-xs text-muted-foreground mb-1">頻度</div>
-                <div className="font-medium capitalize">
-                  {currentWord?.frequency}
                 </div>
               </div>
               <div className="p-4 rounded-lg bg-muted/50">
@@ -146,6 +140,7 @@ export function WordReflesher() {
             </div>
 
             <button
+              type="button"
               onClick={handleNext}
               className="w-full h-16 text-xl rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] animate-in fade-in delay-300"
             >
