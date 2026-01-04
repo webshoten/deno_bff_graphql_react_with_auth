@@ -23,12 +23,10 @@ export function SignupPage() {
           <div className="bg-white shadow-md rounded-lg p-8 text-center">
             <div className="text-5xl mb-4">📧</div>
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              メールを送信しました
+              メールをご確認ください
             </h1>
-            <p className="text-gray-600 mb-6">
-              ご登録いただいたメールアドレスに確認メールを送信しました。
-              <br />
-              メール内のリンクをクリックして、登録を完了してください。
+            <p className="text-red-600 mb-6">
+              ・※タイトル「単語アプリ確認メール」として迷惑メールなどに分類される場合があります。
             </p>
             <div className="space-y-3">
               <Link

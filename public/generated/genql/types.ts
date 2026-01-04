@@ -2,132 +2,168 @@ export default {
     "scalars": [
         1,
         2,
-        5,
-        8
+        3,
+        7,
+        10
     ],
     "types": {
+        "LearningHistory": {
+            "id": [
+                1
+            ],
+            "learningType": [
+                2
+            ],
+            "userId": [
+                1
+            ],
+            "wordId": [
+                1
+            ],
+            "__typename": [
+                2
+            ]
+        },
+        "ID": {},
+        "String": {},
+        "LearningType": {},
         "Mutation": {
+            "createLearningHistory": [
+                0,
+                {
+                    "learningType": [
+                        3,
+                        "LearningType!"
+                    ],
+                    "userId": [
+                        1,
+                        "ID!"
+                    ],
+                    "wordId": [
+                        1,
+                        "ID!"
+                    ]
+                }
+            ],
             "createUser": [
-                6,
+                8,
                 {
                     "name": [
-                        1,
+                        2,
                         "String!"
                     ]
                 }
             ],
             "deleteUser": [
-                6,
+                8,
                 {
                     "id": [
-                        2,
+                        1,
                         "ID!"
                     ]
                 }
             ],
             "__typename": [
-                1
+                2
             ]
         },
-        "String": {},
-        "ID": {},
         "Post": {
             "content": [
-                1
-            ],
-            "id": [
                 2
             ],
-            "title": [
+            "id": [
                 1
             ],
+            "title": [
+                2
+            ],
             "__typename": [
-                1
+                2
             ]
         },
         "Query": {
             "me": [
-                1
+                2
             ],
             "post": [
-                3,
+                5,
                 {
                     "id": [
-                        2,
+                        1,
                         "ID!"
                     ]
                 }
             ],
             "postCount": [
-                5
+                7
             ],
             "posts": [
-                3
+                5
             ],
             "test": [
-                1
+                2
             ],
             "user": [
-                6,
+                8,
                 {
                     "id": [
-                        2,
+                        1,
                         "ID!"
                     ]
                 }
             ],
             "users": [
-                6
+                8
             ],
             "words": [
-                7
+                9
             ],
             "wordsByDifficulty": [
-                7,
+                9,
                 {
                     "difficulty": [
-                        5,
+                        7,
                         "Int!"
                     ]
                 }
             ],
             "__typename": [
-                1
+                2
             ]
         },
         "Int": {},
         "User": {
             "id": [
-                2
+                1
             ],
             "name": [
-                1
+                2
             ],
             "__typename": [
-                1
+                2
             ]
         },
         "Word": {
             "difficulty": [
-                5
+                7
             ],
             "english": [
-                1
-            ],
-            "frequency": [
-                5
-            ],
-            "id": [
                 2
             ],
-            "japanese": [
+            "frequency": [
+                7
+            ],
+            "id": [
                 1
+            ],
+            "japanese": [
+                2
             ],
             "situation": [
-                1
+                2
             ],
             "__typename": [
-                1
+                2
             ]
         },
         "Boolean": {}

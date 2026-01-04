@@ -3,13 +3,24 @@
 /* eslint-disable */
 
 export type Scalars = {
-    String: string,
     ID: string,
+    String: string,
     Int: number,
     Boolean: boolean,
 }
 
+export interface LearningHistory {
+    id: (Scalars['ID'] | null)
+    learningType: (Scalars['String'] | null)
+    userId: (Scalars['ID'] | null)
+    wordId: (Scalars['ID'] | null)
+    __typename: 'LearningHistory'
+}
+
+export type LearningType = 'choiceTest' | 'passiveLearning' | 'writingTest'
+
 export interface Mutation {
+    createLearningHistory: (LearningHistory[] | null)
     createUser: (User | null)
     deleteUser: (User | null)
     __typename: 'Mutation'
@@ -51,7 +62,17 @@ export interface Word {
     __typename: 'Word'
 }
 
+export interface LearningHistoryGenqlSelection{
+    id?: boolean | number
+    learningType?: boolean | number
+    userId?: boolean | number
+    wordId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
 export interface MutationGenqlSelection{
+    createLearningHistory?: (LearningHistoryGenqlSelection & { __args: {learningType: LearningType, userId: Scalars['ID'], wordId: Scalars['ID']} })
     createUser?: (UserGenqlSelection & { __args: {name: Scalars['String']} })
     deleteUser?: (UserGenqlSelection & { __args: {id: Scalars['ID']} })
     __typename?: boolean | number
@@ -99,6 +120,14 @@ export interface WordGenqlSelection{
 }
 
 
+    const LearningHistory_possibleTypes: string[] = ['LearningHistory']
+    export const isLearningHistory = (obj?: { __typename?: any } | null): obj is LearningHistory => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isLearningHistory"')
+      return LearningHistory_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const Mutation_possibleTypes: string[] = ['Mutation']
     export const isMutation = (obj?: { __typename?: any } | null): obj is Mutation => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isMutation"')
@@ -137,3 +166,9 @@ export interface WordGenqlSelection{
       return Word_possibleTypes.includes(obj.__typename)
     }
     
+
+export const enumLearningType = {
+   choiceTest: 'choiceTest' as const,
+   passiveLearning: 'passiveLearning' as const,
+   writingTest: 'writingTest' as const
+}

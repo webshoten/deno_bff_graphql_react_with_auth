@@ -4,6 +4,7 @@ import { getUserRepository, type User } from "../kv/users.ts";
 import { getPostRepository } from "../kv/posts.ts";
 import type { DecodedToken } from "../firebase/verify-token.ts";
 import { getWordRepository } from "../kv/word.ts";
+import { getLearningHistoryRepository } from "../kv/learningHistory.ts";
 
 // GraphQL コンテキスト型
 export type GraphQLContext = {
@@ -20,6 +21,15 @@ function requireAuth(context: GraphQLContext): DecodedToken {
 }
 
 const builder = new SchemaBuilder<{ Context: GraphQLContext }>({});
+
+// LearningType Enum
+const LearningTypeEnum = builder.enumType("LearningType", {
+  values: {
+    passiveLearning: { value: "passiveLearning" },
+    choiceTest: { value: "choiceTest" },
+    writingTest: { value: "writingTest" },
+  } as const,
+});
 
 // User 型参照
 const UserRef = builder.objectRef<{ id: string; name: string }>("User");
@@ -67,6 +77,21 @@ WordRef.implement({
     difficulty: t.exposeInt("difficulty"),
     frequency: t.exposeInt("frequency"),
     situation: t.exposeString("situation"),
+  }),
+});
+
+// LearningHistory 型参照
+const LearningHistoryRef = builder.objectRef<
+  { id: string; userId: string; wordId: string; learningType: string }
+>("LearningHistory");
+
+// LearningHistory 型
+LearningHistoryRef.implement({
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    userId: t.exposeID("userId"),
+    wordId: t.exposeID("wordId"),
+    learningType: t.exposeString("learningType"),
   }),
 });
 
@@ -136,7 +161,7 @@ builder.queryType({
     }),
     test: t.field({
       type: "String",
-      resolve: (_, __, context) => {
+      resolve: () => {
         return "test";
       },
     }),
@@ -214,6 +239,31 @@ builder.mutationType({
 
         await userRepo.delete(String(args.id));
         return user;
+      },
+    }),
+    createLearningHistory: t.field({
+      type: [LearningHistoryRef],
+      args: {
+        userId: t.arg.id({ required: true }),
+        wordId: t.arg.id({ required: true }),
+        learningType: t.arg({ type: LearningTypeEnum, required: true }),
+      },
+      resolve: async (_, args, context) => {
+        requireAuth(context);
+        const kv = await getKv();
+        const learningHistoryRepo = getLearningHistoryRepository(kv);
+
+        await learningHistoryRepo.create({
+          id: crypto.randomUUID(),
+          userId: args.userId,
+          wordId: args.wordId,
+          learningType: args.learningType,
+        });
+
+        const learningHistory = await learningHistoryRepo.getByUserId(
+          args.userId,
+        );
+        return learningHistory;
       },
     }),
   }),

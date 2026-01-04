@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { useTypedQuery } from "../utils/genql-urql-bridge.ts";
+import { useTypedMutation, useTypedQuery } from "../utils/genql-urql-bridge.ts";
+import { enumLearningType } from "../generated/genql/schema.ts";
+import { useAuth } from "../context/AuthContext.tsx";
 
 export function WordReflesher() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLastCard, setIsLastCard] = useState(false);
+
+  const { user } = useAuth();
 
   const speakEnglish = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -15,10 +20,7 @@ export function WordReflesher() {
 
   const [wordsResult] = useTypedQuery({
     query: {
-      wordsByDifficulty: {
-        __args: {
-          difficulty: 2,
-        },
+      words: {
         id: true,
         japanese: true,
         english: true,
@@ -29,11 +31,46 @@ export function WordReflesher() {
     },
   });
 
+  const [_createLearningHistoryResult, createLearningHistory] =
+    useTypedMutation({
+      mutation: {
+        createLearningHistory: {
+          __args: {
+            learningType: enumLearningType.passiveLearning,
+            userId: "", // placeholder - 実行時に上書き
+            wordId: "", // placeholder - 実行時に上書き
+          },
+          id: true,
+          learningType: true,
+          userId: true,
+          wordId: true,
+        },
+      },
+    });
+
+  const sampleWords = wordsResult.data?.words ?? [];
+  const currentWord = sampleWords[currentIndex];
+
   const handleNext = () => {
+    console.log(currentIndex + 1);
+    if (sampleWords[currentIndex] && user?.id) {
+      createLearningHistory({
+        learningType: enumLearningType.passiveLearning,
+        userId: user?.id,
+        wordId: currentWord.id,
+      });
+    }
+
     if (currentIndex < sampleWords.length - 1) {
       setIsAnimating(true);
       setTimeout(() => {
         setCurrentIndex(currentIndex + 1);
+        setIsAnimating(false);
+      }, 300);
+    } else {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setIsLastCard(true);
         setIsAnimating(false);
       }, 300);
     }
@@ -42,14 +79,11 @@ export function WordReflesher() {
   const handleRestart = () => {
     setIsAnimating(true);
     setTimeout(() => {
+      setIsLastCard(false);
       setCurrentIndex(0);
       setIsAnimating(false);
     }, 300);
   };
-
-  const sampleWords = wordsResult.data?.wordsByDifficulty ?? [];
-  const currentWord = sampleWords[currentIndex];
-  const isLastCard = currentIndex === sampleWords.length - 1;
 
   if (isLastCard && isAnimating === false) {
     return (
@@ -129,6 +163,7 @@ export function WordReflesher() {
               </div>
               <div className="flex items-center justify-center gap-4 animate-in fade-in delay-100">
                 <button
+                  type="button"
                   onClick={() => speakEnglish(currentWord?.english?.[0] ?? "")}
                   className="p-3 rounded-full hover:bg-purple-100 transition-colors duration-200 group"
                   aria-label="音声を再生"

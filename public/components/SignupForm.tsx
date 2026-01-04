@@ -2,6 +2,8 @@
 
 import { type FormEvent, useState } from "react";
 import { useAuth } from "../context/AuthContext.tsx";
+import { Button } from "./button/button.tsx";
+import { StyledInput } from "./input/input.tsx";
 
 type SignupFormProps = {
   onSuccess?: () => void;
@@ -42,68 +44,44 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="signup-name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            名前
-          </label>
-          <input
-            type="text"
-            id="signup-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="山田 太郎"
-          />
-        </div>
+        <StyledInput
+          type="text"
+          id="signup-name"
+          label="名前"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          placeholder="山田 太郎"
+        />
 
-        <div>
-          <label
-            htmlFor="signup-email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            メールアドレス
-          </label>
-          <input
-            type="email"
-            id="signup-email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="example@example.com"
-          />
-        </div>
+        <StyledInput
+          type="email"
+          id="signup-email"
+          label="メールアドレス"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="example@example.com"
+        />
 
-        <div>
-          <label
-            htmlFor="signup-password"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            パスワード
-          </label>
-          <input
-            type="password"
-            id="signup-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="6文字以上"
-          />
-        </div>
+        <StyledInput
+          type="password"
+          id="signup-password"
+          label="パスワード"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={6}
+          placeholder="6文字以上"
+        />
 
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full"
         >
           {isLoading ? "登録中..." : "登録する"}
-        </button>
+        </Button>
       </form>
 
       {onSwitchToLogin && (

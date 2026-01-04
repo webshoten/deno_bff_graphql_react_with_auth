@@ -72,31 +72,19 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
         </p>
 
         <form onSubmit={handlePasswordReset} className="space-y-4">
-          <div>
-            <label
-              htmlFor="reset-email"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              メールアドレス
-            </label>
-            <input
-              type="email"
-              id="reset-email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="example@example.com"
-            />
-          </div>
+          <StyledInput
+            type="email"
+            id="reset-email"
+            label="メールアドレス"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="example@example.com"
+          />
 
-          <button
-            type="submit"
-            disabled={resetLoading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <Button type="submit" disabled={resetLoading} className="w-full">
             {resetLoading ? "送信中..." : "リセットメールを送信"}
-          </button>
+          </Button>
         </form>
 
         <button

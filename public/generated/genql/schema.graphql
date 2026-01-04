@@ -1,4 +1,18 @@
+type LearningHistory {
+  id: ID
+  learningType: String
+  userId: ID
+  wordId: ID
+}
+
+enum LearningType {
+  choiceTest
+  passiveLearning
+  writingTest
+}
+
 type Mutation {
+  createLearningHistory(learningType: LearningType!, userId: ID!, wordId: ID!): [LearningHistory!]
   createUser(name: String!): User
   deleteUser(id: ID!): User
 }
