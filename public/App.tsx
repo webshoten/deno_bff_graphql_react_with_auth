@@ -3,6 +3,7 @@ import { LoginPage, SignupPage } from "./pages/index.ts";
 import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 import { Navigation } from "./components/Navigation.tsx";
 import { WordReflesher } from "./pages/WordReflesher.tsx";
+import { DebugPage } from "./pages/DebugPage.tsx";
 
 function Layout() {
   return (
@@ -28,6 +29,16 @@ function App() {
           element={
             <ProtectedRoute>
               <WordReflesher />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* デバッグページ */}
+        <Route
+          path="/debug"
+          element={
+            <ProtectedRoute>
+              <DebugPage />
             </ProtectedRoute>
           }
         />

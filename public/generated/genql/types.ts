@@ -1,53 +1,92 @@
-// Generated at: 2026-01-10T07:55:44.611Z
+// Generated at: 2026-01-10T08:22:34.660Z
 export default {
     "scalars": [
         1,
         2,
         3,
-        7,
-        10
+        5,
+        7
     ],
     "types": {
+        "DebugResult": {
+            "count": [
+                1
+            ],
+            "message": [
+                2
+            ],
+            "success": [
+                3
+            ],
+            "__typename": [
+                2
+            ]
+        },
+        "Int": {},
+        "String": {},
+        "Boolean": {},
         "LearningHistory": {
             "id": [
-                1
+                5
             ],
             "learningType": [
                 2
             ],
             "userId": [
-                1
+                5
             ],
             "wordId": [
-                1
+                5
             ],
             "__typename": [
                 2
             ]
         },
         "ID": {},
-        "String": {},
+        "LearningHistoryDetail": {
+            "id": [
+                5
+            ],
+            "learningType": [
+                2
+            ],
+            "userId": [
+                5
+            ],
+            "wordEnglish": [
+                2
+            ],
+            "wordId": [
+                5
+            ],
+            "wordJapanese": [
+                2
+            ],
+            "__typename": [
+                2
+            ]
+        },
         "LearningType": {},
         "Mutation": {
             "createLearningHistory": [
-                0,
+                4,
                 {
                     "learningType": [
-                        3,
+                        7,
                         "LearningType!"
                     ],
                     "userId": [
-                        1,
+                        5,
                         "ID!"
                     ],
                     "wordId": [
-                        1,
+                        5,
                         "ID!"
                     ]
                 }
             ],
             "createUser": [
-                8,
+                11,
                 {
                     "name": [
                         2,
@@ -56,11 +95,19 @@ export default {
                 }
             ],
             "deleteUser": [
-                8,
+                11,
                 {
                     "id": [
-                        1,
+                        5,
                         "ID!"
+                    ]
+                }
+            ],
+            "resetLearningHistory": [
+                0,
+                {
+                    "userId": [
+                        5
                     ]
                 }
             ],
@@ -73,7 +120,7 @@ export default {
                 2
             ],
             "id": [
-                1
+                5
             ],
             "title": [
                 2
@@ -83,59 +130,78 @@ export default {
             ]
         },
         "Query": {
+            "learningHistoryCount": [
+                1,
+                {
+                    "userId": [
+                        5
+                    ]
+                }
+            ],
+            "learningHistoryList": [
+                6,
+                {
+                    "limit": [
+                        1
+                    ],
+                    "userId": [
+                        5
+                    ]
+                }
+            ],
             "me": [
                 2
             ],
             "post": [
-                5,
+                9,
                 {
                     "id": [
-                        1,
+                        5,
                         "ID!"
                     ]
                 }
             ],
             "postCount": [
-                7
+                1
             ],
             "posts": [
-                5
+                9
             ],
             "test10": [
                 2
             ],
             "user": [
-                8,
+                11,
                 {
                     "id": [
-                        1,
+                        5,
                         "ID!"
                     ]
                 }
             ],
             "users": [
-                8
+                11
             ],
             "words": [
-                9
+                12
             ],
             "wordsByDifficulty": [
-                9,
+                12,
                 {
                     "difficulty": [
-                        7,
+                        1,
                         "Int!"
                     ]
                 }
             ],
             "wordsForStudy": [
-                9,
+                12,
                 {
                     "limit": [
-                        7
+                        1
                     ],
                     "userId": [
-                        1,
+                        5,
                         "ID!"
                     ]
                 }
@@ -144,10 +210,9 @@ export default {
                 2
             ]
         },
-        "Int": {},
         "User": {
             "id": [
-                1
+                5
             ],
             "name": [
                 2
@@ -158,16 +223,16 @@ export default {
         },
         "Word": {
             "difficulty": [
-                7
+                1
             ],
             "english": [
                 2
             ],
             "frequency": [
-                7
+                1
             ],
             "id": [
-                1
+                5
             ],
             "japanese": [
                 2
@@ -178,7 +243,6 @@ export default {
             "__typename": [
                 2
             ]
-        },
-        "Boolean": {}
+        }
     }
 }

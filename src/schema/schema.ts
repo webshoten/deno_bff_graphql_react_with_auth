@@ -4,6 +4,7 @@ import "./user.ts";
 import "./post.ts";
 import "./word.ts";
 import "./learning.ts";
+import "./debug.ts";
 
 // 最後にbuilderをインポートしてスキーマを生成
 import { builder } from "./builder.ts";

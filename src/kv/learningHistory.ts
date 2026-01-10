@@ -37,19 +37,7 @@ export function getLearningHistoryRepository(kv: Deno.Kv) {
     },
 
     async create(_learningHistory: LearningHistory): Promise<void> {
-      const allLearningHistories = await this.getAll();
-
-      const learningHistoryCount =
-        allLearningHistories.filter((learningHistory) =>
-          learningHistory.userId === _learningHistory.userId &&
-          learningHistory.wordId === _learningHistory.wordId &&
-          learningHistory.learningType === _learningHistory.learningType
-        ).length;
-
-      if (learningHistoryCount > 0) {
-        return;
-      }
-
+      // 毎回新しいレコードを作成（学習回数=レコード数）
       const key = [...prefix, _learningHistory.id];
       await kv.set(key, _learningHistory);
     },

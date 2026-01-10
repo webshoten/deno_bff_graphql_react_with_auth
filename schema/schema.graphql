@@ -1,8 +1,23 @@
+type DebugResult {
+  count: Int
+  message: String
+  success: Boolean
+}
+
 type LearningHistory {
   id: ID
   learningType: String
   userId: ID
   wordId: ID
+}
+
+type LearningHistoryDetail {
+  id: ID
+  learningType: String
+  userId: ID
+  wordEnglish: [String!]
+  wordId: ID
+  wordJapanese: String
 }
 
 enum LearningType {
@@ -15,6 +30,7 @@ type Mutation {
   createLearningHistory(learningType: LearningType!, userId: ID!, wordId: ID!): [LearningHistory!]
   createUser(name: String!): User
   deleteUser(id: ID!): User
+  resetLearningHistory(userId: ID): DebugResult
 }
 
 type Post {
@@ -24,6 +40,8 @@ type Post {
 }
 
 type Query {
+  learningHistoryCount(userId: ID): Int
+  learningHistoryList(limit: Int, userId: ID): [LearningHistoryDetail!]
   me: String
   post(id: ID!): Post
   postCount: Int

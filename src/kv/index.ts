@@ -3,7 +3,6 @@
 import { getUserRepository } from "./users.ts";
 import { getPostRepository } from "./posts.ts";
 import { getWordRepository } from "./word.ts";
-import { getLearningHistoryRepository } from "./learningHistory.ts";
 
 let kv: Deno.Kv | null = null;
 
@@ -21,7 +20,6 @@ export async function initializeData() {
   const userRepo = getUserRepository(kv);
   const postRepo = getPostRepository(kv);
   const wordRepo = getWordRepository(kv);
-  const learningHistoryRepo = getLearningHistoryRepository(kv);
 
   // 既にデータが存在するかチェック
   const existingUsers = await userRepo.getAll();
@@ -53,17 +51,7 @@ export async function initializeData() {
     });
   }
 
-  // LearningHistoryをリセット
-  const existingLearningHistories = await learningHistoryRepo.getAll();
-  if (existingLearningHistories.length > 0) {
-    console.log("🗑️ 既存のLearningHistoryを削除中...");
-    for (const history of existingLearningHistories) {
-      await learningHistoryRepo.delete(history.id);
-    }
-    console.log(
-      `✅ LearningHistoryを削除しました（${existingLearningHistories.length}件）`,
-    );
-  }
+  // LearningHistoryはユーザー単位で保持（リセットしない）
 
   // Wordsは毎回delete insertで最新化
   const existingWords = await wordRepo.getAll();

@@ -24,6 +24,13 @@ export function Navigation() {
                   >
                     単語学習
                   </NavLink>
+                  <NavLink
+                    to="/debug"
+                    className={({ isActive }) =>
+                      isActive ? "text-blue-600" : "text-gray-600"}
+                  >
+                    🛠️
+                  </NavLink>
                   <button type="button" onClick={logout}>ログアウト</button>
                 </>
               )

@@ -1,13 +1,20 @@
-// Generated at: 2026-01-10T07:55:44.611Z
+// Generated at: 2026-01-10T08:22:34.660Z
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
 
 export type Scalars = {
-    ID: string,
-    String: string,
     Int: number,
+    String: string,
     Boolean: boolean,
+    ID: string,
+}
+
+export interface DebugResult {
+    count: (Scalars['Int'] | null)
+    message: (Scalars['String'] | null)
+    success: (Scalars['Boolean'] | null)
+    __typename: 'DebugResult'
 }
 
 export interface LearningHistory {
@@ -18,12 +25,23 @@ export interface LearningHistory {
     __typename: 'LearningHistory'
 }
 
+export interface LearningHistoryDetail {
+    id: (Scalars['ID'] | null)
+    learningType: (Scalars['String'] | null)
+    userId: (Scalars['ID'] | null)
+    wordEnglish: (Scalars['String'][] | null)
+    wordId: (Scalars['ID'] | null)
+    wordJapanese: (Scalars['String'] | null)
+    __typename: 'LearningHistoryDetail'
+}
+
 export type LearningType = 'choiceTest' | 'passiveLearning' | 'writingTest'
 
 export interface Mutation {
     createLearningHistory: (LearningHistory[] | null)
     createUser: (User | null)
     deleteUser: (User | null)
+    resetLearningHistory: (DebugResult | null)
     __typename: 'Mutation'
 }
 
@@ -35,6 +53,8 @@ export interface Post {
 }
 
 export interface Query {
+    learningHistoryCount: (Scalars['Int'] | null)
+    learningHistoryList: (LearningHistoryDetail[] | null)
     me: (Scalars['String'] | null)
     post: (Post | null)
     postCount: (Scalars['Int'] | null)
@@ -64,6 +84,14 @@ export interface Word {
     __typename: 'Word'
 }
 
+export interface DebugResultGenqlSelection{
+    count?: boolean | number
+    message?: boolean | number
+    success?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
 export interface LearningHistoryGenqlSelection{
     id?: boolean | number
     learningType?: boolean | number
@@ -73,10 +101,22 @@ export interface LearningHistoryGenqlSelection{
     __scalar?: boolean | number
 }
 
+export interface LearningHistoryDetailGenqlSelection{
+    id?: boolean | number
+    learningType?: boolean | number
+    userId?: boolean | number
+    wordEnglish?: boolean | number
+    wordId?: boolean | number
+    wordJapanese?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
 export interface MutationGenqlSelection{
     createLearningHistory?: (LearningHistoryGenqlSelection & { __args: {learningType: LearningType, userId: Scalars['ID'], wordId: Scalars['ID']} })
     createUser?: (UserGenqlSelection & { __args: {name: Scalars['String']} })
     deleteUser?: (UserGenqlSelection & { __args: {id: Scalars['ID']} })
+    resetLearningHistory?: (DebugResultGenqlSelection & { __args?: {userId?: (Scalars['ID'] | null)} })
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -90,6 +130,8 @@ export interface PostGenqlSelection{
 }
 
 export interface QueryGenqlSelection{
+    learningHistoryCount?: { __args: {userId?: (Scalars['ID'] | null)} } | boolean | number
+    learningHistoryList?: (LearningHistoryDetailGenqlSelection & { __args?: {limit?: (Scalars['Int'] | null), userId?: (Scalars['ID'] | null)} })
     me?: boolean | number
     post?: (PostGenqlSelection & { __args: {id: Scalars['ID']} })
     postCount?: boolean | number
@@ -123,10 +165,26 @@ export interface WordGenqlSelection{
 }
 
 
+    const DebugResult_possibleTypes: string[] = ['DebugResult']
+    export const isDebugResult = (obj?: { __typename?: any } | null): obj is DebugResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isDebugResult"')
+      return DebugResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const LearningHistory_possibleTypes: string[] = ['LearningHistory']
     export const isLearningHistory = (obj?: { __typename?: any } | null): obj is LearningHistory => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isLearningHistory"')
       return LearningHistory_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const LearningHistoryDetail_possibleTypes: string[] = ['LearningHistoryDetail']
+    export const isLearningHistoryDetail = (obj?: { __typename?: any } | null): obj is LearningHistoryDetail => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isLearningHistoryDetail"')
+      return LearningHistoryDetail_possibleTypes.includes(obj.__typename)
     }
     
 
