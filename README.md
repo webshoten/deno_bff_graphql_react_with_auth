@@ -92,7 +92,8 @@ deno task build
 │   ├── kv/              # Deno KV data access layer
 │   ├── generate/        # Schema generation scripts
 │   ├── server.ts        # GraphQL API server
-│   └── build.ts         # React app build
+│   └── bundle/          # バンドル関連
+│       └── build.ts     # React app build
 ├── public/              # Frontend (React)
 │   ├── App.tsx
 │   ├── main.tsx

@@ -64,6 +64,25 @@ async function generateGenQL() {
     console.log("🔄 インポートパスをDeno形式に修正中...");
     await fixGenQLImports();
 
+    // Language Serverに変更を通知するため、生成ファイルにタイムスタンプを追加
+    const timestamp = new Date().toISOString();
+    const timestampComment = `// Generated at: ${timestamp}\n`;
+
+    const filesToUpdate = ["schema.ts", "index.ts", "types.ts"];
+    for (const fileName of filesToUpdate) {
+      const filePath = `${outputDir}/${fileName}`;
+      try {
+        const content = await Deno.readTextFile(filePath);
+        const updatedContent = content.startsWith("// Generated at:")
+          ? content.replace(/^\/\/ Generated at:.*\n/, timestampComment)
+          : timestampComment + content;
+        await Deno.writeTextFile(filePath, updatedContent);
+      } catch {
+        // ファイルが存在しない場合はスキップ
+      }
+    }
+    console.log("🔄 型定義にタイムスタンプを追加しました");
+
     console.log("   クライアントから型定義を使用できます");
   } catch (error) {
     console.error("❌ genql生成エラー:", error);

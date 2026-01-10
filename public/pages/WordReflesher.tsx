@@ -18,9 +18,13 @@ export function WordReflesher() {
     globalThis.speechSynthesis.speak(utterance);
   };
 
-  const [wordsResult] = useTypedQuery({
+  const [wordsResult, reexecuteQuery] = useTypedQuery({
     query: {
-      words: {
+      wordsForStudy: {
+        __args: {
+          userId: user?.id ?? "",
+          limit: 12,
+        },
         id: true,
         japanese: true,
         english: true,
@@ -29,6 +33,7 @@ export function WordReflesher() {
         situation: true,
       },
     },
+    pause: !user?.id, // ユーザーがログインするまでクエリを実行しない
   });
 
   const [_createLearningHistoryResult, createLearningHistory] =
@@ -48,7 +53,7 @@ export function WordReflesher() {
       },
     });
 
-  const sampleWords = wordsResult.data?.words ?? [];
+  const sampleWords = wordsResult.data?.wordsForStudy ?? [];
   const currentWord = sampleWords[currentIndex];
 
   const handleNext = () => {
@@ -82,6 +87,8 @@ export function WordReflesher() {
       setIsLastCard(false);
       setCurrentIndex(0);
       setIsAnimating(false);
+      // 新しい12件を取得（キャッシュを無視してサーバーから再取得）
+      reexecuteQuery({ requestPolicy: "network-only" });
     }, 300);
   };
 

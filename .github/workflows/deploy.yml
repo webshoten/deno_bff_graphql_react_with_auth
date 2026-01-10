@@ -56,7 +56,7 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "deno-bff-gr-65"
-          entrypoint: "src/server.ts"
+          entrypoint: "src/entrypoint.prod.ts"
           include: |
             src
             dist

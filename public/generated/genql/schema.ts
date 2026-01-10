@@ -1,3 +1,4 @@
+// Generated at: 2026-01-10T07:55:44.611Z
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -38,11 +39,12 @@ export interface Query {
     post: (Post | null)
     postCount: (Scalars['Int'] | null)
     posts: (Post[] | null)
-    test: (Scalars['String'] | null)
+    test10: (Scalars['String'] | null)
     user: (User | null)
     users: (User[] | null)
     words: (Word[] | null)
     wordsByDifficulty: (Word[] | null)
+    wordsForStudy: (Word[] | null)
     __typename: 'Query'
 }
 
@@ -92,11 +94,12 @@ export interface QueryGenqlSelection{
     post?: (PostGenqlSelection & { __args: {id: Scalars['ID']} })
     postCount?: boolean | number
     posts?: PostGenqlSelection
-    test?: boolean | number
+    test10?: boolean | number
     user?: (UserGenqlSelection & { __args: {id: Scalars['ID']} })
     users?: UserGenqlSelection
     words?: WordGenqlSelection
     wordsByDifficulty?: (WordGenqlSelection & { __args: {difficulty: Scalars['Int']} })
+    wordsForStudy?: (WordGenqlSelection & { __args: {limit?: (Scalars['Int'] | null), userId: Scalars['ID']} })
     __typename?: boolean | number
     __scalar?: boolean | number
 }

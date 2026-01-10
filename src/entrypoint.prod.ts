@@ -1,5 +1,5 @@
 /**
- * サーバー
+ * 本番用エントリーポイント
  *
  * 責務:
  * - GraphQL エンドポイント
@@ -16,6 +16,29 @@ import { verifyAuthHeader } from "./firebase/verify-token.ts";
 
 const app = new Hono();
 const port = parseInt(Deno.env.get("PORT") || "4000");
+
+// Content-Type を拡張子から取得
+function getContentType(path: string): string {
+  const ext = path.split(".").pop()?.toLowerCase();
+  const types: Record<string, string> = {
+    js: "application/javascript",
+    mjs: "application/javascript",
+    css: "text/css",
+    html: "text/html",
+    json: "application/json",
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    gif: "image/gif",
+    svg: "image/svg+xml",
+    ico: "image/x-icon",
+    woff: "font/woff",
+    woff2: "font/woff2",
+    ttf: "font/ttf",
+    eot: "application/vnd.ms-fontobject",
+  };
+  return types[ext ?? ""] ?? "application/octet-stream";
+}
 
 // ライブリロード用WebSocketクライアント管理
 const liveReloadClients = new Set<WebSocket>();
@@ -94,32 +117,38 @@ app.all("/graphql", async (c) => {
 app.use("/*", async (c, next) => {
   const path = c.req.path;
 
+  // 本番環境かどうかを判定
+  const isProduction = Deno.env.get("DENO_ENV") === "production" ||
+    Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
+
   // 拡張子があるパスは静的ファイルとして扱う
   const hasExtension = /\.\w+$/.test(path);
 
   if (hasExtension) {
-    // dist/ から配信を試みる
-    try {
-      const distPath = `./dist${path}`;
-      const stat = await Deno.stat(distPath);
-      if (stat.isFile) {
-        return serveStatic({ root: "./dist" })(c, next);
+    // 開発環境ではキャッシュを無効化してファイルを直接配信
+    if (!isProduction) {
+      try {
+        const distPath = `./dist${path}`;
+        const content = await Deno.readFile(distPath);
+        const contentType = getContentType(path);
+        return new Response(content, {
+          headers: {
+            "Content-Type": contentType,
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+          },
+        });
+      } catch {
+        return c.notFound();
       }
-    } catch {
-      // dist/ にない場合は public/ から配信
     }
 
-    // public/ から配信
-    return serveStatic({ root: "./public" })(c, next);
+    // 本番環境ではserveStaticを使用
+    return serveStatic({ root: "./dist" })(c, next);
   }
 
   // 拡張子がないパスは SPA フォールバック（index.html を返す）
   const html = await Deno.readTextFile("./public/index.html");
   const timestamp = Date.now();
-
-  // 本番環境かどうかを判定（Deno Deploy では DENO_DEPLOYMENT_ID が設定される）
-  const isProduction = Deno.env.get("DENO_ENV") === "production" ||
-    Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
 
   // 開発環境ではライブリロードスクリプトを注入
   if (!isProduction) {

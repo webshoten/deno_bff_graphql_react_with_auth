@@ -28,11 +28,12 @@ type Query {
   post(id: ID!): Post
   postCount: Int
   posts: [Post!]
-  test: String
+  test10: String
   user(id: ID!): User
   users: [User!]
   words: [Word!]
   wordsByDifficulty(difficulty: Int!): [Word!]
+  wordsForStudy(limit: Int, userId: ID!): [Word!]
 }
 
 type User {

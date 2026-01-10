@@ -1,17 +1,16 @@
 // public/components/Navigation.tsx
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
 
 export function Navigation() {
   const { isAuthenticated, logout } = useAuth();
-  const location = useLocation();
 
   return (
     <nav className="bg-white shadow">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex justify-between h-16 items-center">
           <Link to="/" className="font-bold text-xl">
-            React Auth
+            Word Reflesher
           </Link>
 
           <div className="flex gap-4">

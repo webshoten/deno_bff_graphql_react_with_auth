@@ -45,7 +45,7 @@ export async function buildReactApp() {
       jsxImportSource: "react",
       plugins: [
         ...denoPlugins({
-          importMapURL: new URL("../import_map.json", import.meta.url).href,
+          importMapURL: new URL("../../import_map.json", import.meta.url).href,
         }),
       ],
       // 環境変数をバンドルに埋め込む

@@ -1,3 +1,4 @@
+// Generated at: 2026-01-10T07:55:44.611Z
 export default {
     "scalars": [
         1,
@@ -100,7 +101,7 @@ export default {
             "posts": [
                 5
             ],
-            "test": [
+            "test10": [
                 2
             ],
             "user": [
@@ -124,6 +125,18 @@ export default {
                     "difficulty": [
                         7,
                         "Int!"
+                    ]
+                }
+            ],
+            "wordsForStudy": [
+                9,
+                {
+                    "limit": [
+                        7
+                    ],
+                    "userId": [
+                        1,
+                        "ID!"
                     ]
                 }
             ],

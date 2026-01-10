@@ -36,9 +36,22 @@ export function getLearningHistoryRepository(kv: Deno.Kv) {
       return learningHistoriesByUserId;
     },
 
-    async create(learningHistory: LearningHistory): Promise<void> {
-      const key = [...prefix, learningHistory.id];
-      await kv.set(key, learningHistory);
+    async create(_learningHistory: LearningHistory): Promise<void> {
+      const allLearningHistories = await this.getAll();
+
+      const learningHistoryCount =
+        allLearningHistories.filter((learningHistory) =>
+          learningHistory.userId === _learningHistory.userId &&
+          learningHistory.wordId === _learningHistory.wordId &&
+          learningHistory.learningType === _learningHistory.learningType
+        ).length;
+
+      if (learningHistoryCount > 0) {
+        return;
+      }
+
+      const key = [...prefix, _learningHistory.id];
+      await kv.set(key, _learningHistory);
     },
 
     async update(learningHistory: LearningHistory): Promise<void> {

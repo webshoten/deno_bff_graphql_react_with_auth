@@ -1,11 +1,15 @@
 /**
  * スキーマ監視
- * ./src/schema を監視して、変更があれば型定義を自動生成
+ * ./src/schema ディレクトリ内の全 .ts ファイルを監視して、変更があれば型定義を自動生成
+ *
+ * 監視対象:
+ * - builder.ts, common.ts, user.ts, post.ts, word.ts, learning.ts, schema.ts など
  *
  * フロー:
- * 1. schema.ts 変更を検知
+ * 1. schema/*.ts ファイルの変更/作成を検知
  * 2. schema.graphql を生成（子プロセスでキャッシュ回避）
  * 3. genql で型定義を生成
+ * 4. フロントエンドをバンドル
  */
 
 import { generateGenQL } from "../generate/generate-genql.ts";
@@ -66,8 +70,17 @@ export async function startSchemaWatcher(): Promise<void> {
     const watcher = Deno.watchFs(SCHEMA_PATH);
 
     for await (const event of watcher) {
-      if (event.kind === "modify") {
-        console.log("🔄 スキーマファイルが変更されました:", event.paths);
+      // modify または create イベントで .ts ファイルのみ対象
+      const isTargetEvent = event.kind === "modify" || event.kind === "create";
+      const hasTsFile = event.paths.some((p) => p.endsWith(".ts"));
+
+      if (isTargetEvent && hasTsFile) {
+        const changedFiles = event.paths
+          .filter((p) => p.endsWith(".ts"))
+          .map((p) => p.split("/").pop());
+        console.log(
+          `🔄 スキーマファイルが変更されました: ${changedFiles.join(", ")}`,
+        );
 
         // デバウンス（ファイル書き込み完了を待つ）
         await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS));

@@ -8,10 +8,11 @@
  * 3. ライブリロード通知を送信
  */
 
-import { buildReactApp } from "../build.ts";
+import { buildReactApp } from "../bundle/build.ts";
 
 const WATCH_PATHS = ["./public"];
 const DEBOUNCE_MS = 100;
+const MIN_BUILD_INTERVAL = 500; // 500ms以内の連続ビルドを防止
 
 // 監視から除外するパス（genql 生成中の競合を防ぐ）
 const IGNORE_PATTERNS = [
@@ -21,6 +22,7 @@ const IGNORE_PATTERNS = [
 
 let isBuilding = false;
 let buildQueue = false;
+let lastBuildTime = 0;
 
 // ライブリロード通知関数（外部から設定）
 let notifyLiveReload: (() => void) | null = null;
@@ -90,10 +92,17 @@ export async function startPublicWatcher(): Promise<void> {
           continue;
         }
 
+        // 連続ビルド防止（MIN_BUILD_INTERVAL以内のイベントはスキップ）
+        const now = Date.now();
+        if (now - lastBuildTime < MIN_BUILD_INTERVAL) {
+          continue;
+        }
+
         console.log(`🔄 ファイル変更を検知: ${event.paths.join(", ")}`);
 
         // デバウンス（ファイル書き込み完了を待つ）
         await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS));
+        lastBuildTime = Date.now();
         await runBuild();
       }
     }
