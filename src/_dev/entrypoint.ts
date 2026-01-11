@@ -2,7 +2,7 @@
  * 開発用エントリーポイント
  *
  * 起動するもの:
- * 1. サーバー (entrypoint.prod.ts)
+ * 1. サーバー (server/entrypoint.ts)
  * 2. ファイル監視 (watcher/)
  *    - スキーマ監視 → 型定義生成
  *    - public監視 → バンドル生成 → ライブリロード
@@ -20,7 +20,7 @@ import { generateGenQL } from "./generate/generate-genql.ts";
  */
 async function generateSchemaGraphQL(): Promise<void> {
   const command = new Deno.Command("deno", {
-    args: ["run", "-A", "./src/generate/generate-schema.ts"],
+    args: ["run", "-A", "./src/_dev/generate/generate-schema.ts"],
     stdout: "piped",
     stderr: "piped",
   });
@@ -46,7 +46,7 @@ if (import.meta.main) {
 
   // サーバーを起動
   console.log("🚀 サーバーを起動中...");
-  const server = await import("./entrypoint.prod.ts");
+  const server = await import("../server/entrypoint.ts");
 
   // ライブリロード通知を設定
   if (server.notifyLiveReload) {

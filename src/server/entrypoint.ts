@@ -11,8 +11,8 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
 import { createYoga } from "graphql-yoga";
 import { type GraphQLContext, schema } from "./schema/schema.ts";
-import { initializeData } from "./kv/index.ts";
-import { verifyAuthHeader } from "./firebase/verify-token.ts";
+import { initializeData } from "../core/kv/index.ts";
+import { verifyAuthHeader } from "../core/firebase/verify-token.ts";
 
 const app = new Hono();
 const port = parseInt(Deno.env.get("PORT") || "4000");
@@ -187,3 +187,4 @@ console.log(`📄 HTML endpoint: http://localhost:${port}/`);
 
 // Deno のネイティブ Web サーバ API
 Deno.serve({ port }, app.fetch);
+

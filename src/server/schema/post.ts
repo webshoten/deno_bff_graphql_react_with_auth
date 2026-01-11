@@ -1,6 +1,6 @@
 import { builder, requireAuth } from "./builder.ts";
-import { getKv } from "../kv/index.ts";
-import { getPostRepository } from "../kv/posts.ts";
+import { getKv } from "../../core/kv/index.ts";
+import { getPostRepository } from "../../core/kv/posts.ts";
 
 // Post 型参照
 const PostRef = builder.objectRef<
@@ -50,5 +50,4 @@ builder.queryFields((t) => ({
     },
   }),
 }));
-
 

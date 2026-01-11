@@ -1,6 +1,6 @@
 import { builder, requireAuth } from "./builder.ts";
-import { getKv } from "../kv/index.ts";
-import { getUserRepository, type User } from "../kv/users.ts";
+import { getKv } from "../../core/kv/index.ts";
+import { getUserRepository, type User } from "../../core/kv/users.ts";
 
 // User 型参照
 const UserRef = builder.objectRef<{ id: string; name: string }>("User");

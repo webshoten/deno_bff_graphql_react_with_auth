@@ -1,7 +1,7 @@
 import { builder, requireAuth } from "./builder.ts";
-import { getKv } from "../kv/index.ts";
-import { getLearningHistoryRepository } from "../kv/learningHistory.ts";
-import { getWordRepository } from "../kv/word.ts";
+import { getKv } from "../../core/kv/index.ts";
+import { getLearningHistoryRepository } from "../../core/kv/learningHistory.ts";
+import { getWordRepository } from "../../core/kv/word.ts";
 
 // デバッグ用の結果型
 const DebugResultRef = builder.objectRef<{
@@ -150,3 +150,4 @@ builder.mutationFields((t) => ({
     },
   }),
 }));
+

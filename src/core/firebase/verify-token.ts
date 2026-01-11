@@ -67,3 +67,4 @@ export async function verifyAuthHeader(
 
   return await verifyFirebaseToken(match[1]);
 }
+

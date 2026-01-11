@@ -1,6 +1,6 @@
 /**
  * スキーマ監視
- * ./src/schema ディレクトリ内の全 .ts ファイルを監視して、変更があれば型定義を自動生成
+ * ./src/server/schema ディレクトリ内の全 .ts ファイルを監視して、変更があれば型定義を自動生成
  *
  * 監視対象:
  * - builder.ts, common.ts, user.ts, post.ts, word.ts, learning.ts, schema.ts など
@@ -15,7 +15,7 @@
 import { generateGenQL } from "../generate/generate-genql.ts";
 import { runBuild } from "./public-watcher.ts";
 
-const SCHEMA_PATH = "./src/schema";
+const SCHEMA_PATH = "./src/server/schema";
 const DEBOUNCE_MS = 100;
 
 /**
@@ -23,7 +23,7 @@ const DEBOUNCE_MS = 100;
  */
 async function generateSchemaGraphQL(): Promise<void> {
   const command = new Deno.Command("deno", {
-    args: ["run", "-A", "./src/generate/generate-schema.ts"],
+    args: ["run", "-A", "./src/_dev/generate/generate-schema.ts"],
     stdout: "piped",
     stderr: "piped",
   });

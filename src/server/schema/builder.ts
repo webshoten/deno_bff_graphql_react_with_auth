@@ -1,5 +1,5 @@
 import SchemaBuilder from "@pothos/core";
-import type { DecodedToken } from "../firebase/verify-token.ts";
+import type { DecodedToken } from "../../core/firebase/verify-token.ts";
 
 // GraphQL コンテキスト型
 export type GraphQLContext = {

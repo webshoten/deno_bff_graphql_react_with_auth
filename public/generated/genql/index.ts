@@ -1,4 +1,4 @@
-// Generated at: 2026-01-10T08:22:34.660Z
+// Generated at: 2026-01-11T01:18:09.895Z
 import type {
   QueryGenqlSelection,
   Query,

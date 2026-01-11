@@ -70,3 +70,4 @@ export function getWordRepository(kv: Deno.Kv) {
     },
   };
 }
+

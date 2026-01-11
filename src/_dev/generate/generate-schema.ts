@@ -2,7 +2,7 @@
 // スキーマをSDL形式に変換してファイルに出力
 
 import { printSchema } from "graphql";
-import { schema } from "../schema/schema.ts";
+import { schema } from "../../server/schema/schema.ts";
 
 // スキーマをSDL形式に変換
 function generateSchemaSDL() {
@@ -35,3 +35,4 @@ if (import.meta.main) {
 }
 
 export { generateSchemaSDL };
+

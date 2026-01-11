@@ -1039,3 +1039,4 @@ export async function initializeData() {
 
   console.log(`✅ Wordsの投入が完了しました（${words.length}件）`);
 }
+
