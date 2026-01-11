@@ -4,7 +4,7 @@
 
 import { fixGenQLImports } from "./fix-genql-imports.ts";
 
-async function generateGenQL() {
+async function runGenerateGenQL() {
   try {
     const schemaPath = "./schema/schema.graphql";
     const outputDir = "./public/generated/genql";
@@ -99,8 +99,7 @@ async function generateGenQL() {
 }
 
 if (import.meta.main) {
-  await generateGenQL();
+  await runGenerateGenQL();
 }
 
-export { generateGenQL };
-
+export { runGenerateGenQL };

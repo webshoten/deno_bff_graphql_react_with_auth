@@ -3,7 +3,7 @@
  * ./src/server/schema を監視して、変更があれば型定義を自動生成
  */
 
-import { generateGenQL } from "../generate/generate-genql.ts";
+import { runGenerateGenQL } from "../generate/generate-genql.ts";
 import { runGenerateSchema } from "../generate/generate-schema.ts";
 import { runBuild } from "./public-watcher.ts";
 
@@ -13,7 +13,7 @@ const DEBOUNCE_MS = 100;
 async function generateTypes(): Promise<void> {
   console.log("🔄 型定義を自動生成中...");
   await runGenerateSchema();
-  await generateGenQL();
+  await runGenerateGenQL();
   console.log("✅ 型定義の自動生成が完了しました");
 
   console.log("🔄 バンドルを再生成中...");
