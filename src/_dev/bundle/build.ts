@@ -96,4 +96,3 @@ export async function buildReactApp() {
 if (import.meta.main) {
   await buildReactApp();
 }
-

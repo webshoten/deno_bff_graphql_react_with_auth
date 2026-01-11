@@ -1,68 +1,25 @@
 /**
  * スキーマ監視
- * ./src/server/schema ディレクトリ内の全 .ts ファイルを監視して、変更があれば型定義を自動生成
- *
- * 監視対象:
- * - builder.ts, common.ts, user.ts, post.ts, word.ts, learning.ts, schema.ts など
- *
- * フロー:
- * 1. schema/*.ts ファイルの変更/作成を検知
- * 2. schema.graphql を生成（子プロセスでキャッシュ回避）
- * 3. genql で型定義を生成
- * 4. フロントエンドをバンドル
+ * ./src/server/schema を監視して、変更があれば型定義を自動生成
  */
 
 import { generateGenQL } from "../generate/generate-genql.ts";
+import { runGenerateSchema } from "../generate/generate-schema.ts";
 import { runBuild } from "./public-watcher.ts";
 
 const SCHEMA_PATH = "./src/server/schema";
 const DEBOUNCE_MS = 100;
 
-/**
- * schema.graphql を生成（子プロセスで実行してDenoのモジュールキャッシュを回避）
- */
-async function generateSchemaGraphQL(): Promise<void> {
-  const command = new Deno.Command("deno", {
-    args: ["run", "-A", "./src/_dev/generate/generate-schema.ts"],
-    stdout: "piped",
-    stderr: "piped",
-  });
-
-  const result = await command.output();
-
-  if (!result.success) {
-    const errorText = new TextDecoder().decode(result.stderr);
-    throw new Error(`schema.graphql生成失敗: ${errorText}`);
-  }
-
-  const output = new TextDecoder().decode(result.stdout);
-  if (output) {
-    console.log(output);
-  }
-}
-
-/**
- * 型定義を生成（schema.graphql → genql）
- */
 async function generateTypes(): Promise<void> {
   console.log("🔄 型定義を自動生成中...");
-
-  // schema.graphql を生成
-  await generateSchemaGraphQL();
-
-  // genql で型定義を生成
+  await runGenerateSchema();
   await generateGenQL();
-
   console.log("✅ 型定義の自動生成が完了しました");
 
-  // 型定義生成完了後にバンドルを実行
   console.log("🔄 バンドルを再生成中...");
   await runBuild();
 }
 
-/**
- * スキーマファイルの監視を開始
- */
 export async function startSchemaWatcher(): Promise<void> {
   console.log(`📁 スキーマファイルを監視中: ${SCHEMA_PATH}`);
 
@@ -70,7 +27,6 @@ export async function startSchemaWatcher(): Promise<void> {
     const watcher = Deno.watchFs(SCHEMA_PATH);
 
     for await (const event of watcher) {
-      // modify または create イベントで .ts ファイルのみ対象
       const isTargetEvent = event.kind === "modify" || event.kind === "create";
       const hasTsFile = event.paths.some((p) => p.endsWith(".ts"));
 
@@ -82,7 +38,6 @@ export async function startSchemaWatcher(): Promise<void> {
           `🔄 スキーマファイルが変更されました: ${changedFiles.join(", ")}`,
         );
 
-        // デバウンス（ファイル書き込み完了を待つ）
         await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS));
 
         try {
@@ -97,7 +52,6 @@ export async function startSchemaWatcher(): Promise<void> {
   }
 }
 
-// 直接実行された場合
 if (import.meta.main) {
   await startSchemaWatcher();
 }
