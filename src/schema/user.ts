@@ -118,3 +118,4 @@ export type QueryResultMap = {
   users: UserType[];
   user: UserType | null;
 };
+

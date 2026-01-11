@@ -22,3 +22,4 @@ builder.queryType({});
 
 // Mutation型の基盤を定義（他のファイルで拡張する）
 builder.mutationType({});
+
